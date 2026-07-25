@@ -4,3 +4,5 @@ Thumbs.db
 # Editor
 .vscode/
 .idea/
+# Transfer artifacts
+*.bundle
