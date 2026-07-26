@@ -1,0 +1,69 @@
+<svg viewBox="0 0 1240 560" xmlns="http://www.w3.org/2000/svg" font-family="'Segoe UI', system-ui, -apple-system, sans-serif">
+  <defs>
+    <marker id="aSlate3" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#64748b"/></marker>
+    <marker id="aGreen3" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#059669"/></marker>
+    <marker id="aIndigo3" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#4f46e5"/></marker>
+    <filter id="soft3" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0f172a" flood-opacity="0.12"/></filter>
+  </defs>
+
+  <rect x="0" y="0" width="1240" height="560" fill="#f8fafc"/>
+
+  <text x="620" y="44" text-anchor="middle" font-size="28" font-weight="700" fill="#0f172a">Contextual Retrieval — the preprocessing fix</text>
+  <text x="620" y="72" text-anchor="middle" font-size="15" fill="#475569">Claude writes a short "you are here" note for every chunk, before anything gets indexed</text>
+
+  <!-- Whole document -->
+  <rect x="56" y="132" width="248" height="96" rx="10" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2" filter="url(#soft3)"/>
+  <text x="180" y="170" text-anchor="middle" font-size="16" font-weight="700" fill="#0f172a">Whole document</text>
+  <text x="180" y="194" text-anchor="middle" font-size="12.5" fill="#475569">loaded into the prompt cache</text>
+  <text x="180" y="213" text-anchor="middle" font-size="12.5" fill="#475569">once, reused for every chunk</text>
+
+  <!-- Raw chunk -->
+  <rect x="56" y="300" width="248" height="96" rx="10" fill="#f1f5f9" stroke="#94a3b8" stroke-width="2" filter="url(#soft3)"/>
+  <text x="180" y="338" text-anchor="middle" font-size="16" font-weight="700" fill="#0f172a">Raw chunk</text>
+  <text x="180" y="362" text-anchor="middle" font-size="12.5" fill="#475569">one slice of that document,</text>
+  <text x="180" y="381" text-anchor="middle" font-size="12.5" fill="#475569">a few hundred tokens</text>
+
+  <!-- Arrows into Claude -->
+  <path d="M 304 180 L 348 180 L 348 238 L 386 238" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#aSlate3)"/>
+  <path d="M 304 348 L 348 348 L 348 290 L 386 290" stroke="#64748b" stroke-width="2.5" fill="none" marker-end="url(#aSlate3)"/>
+
+  <!-- Claude -->
+  <rect x="394" y="196" width="232" height="136" rx="12" fill="#eef2ff" stroke="#4f46e5" stroke-width="2.5" filter="url(#soft3)"/>
+  <text x="510" y="240" text-anchor="middle" font-size="18" font-weight="700" fill="#3730a3">Claude</text>
+  <text x="510" y="268" text-anchor="middle" font-size="12.5" fill="#4f46e5">writes a 50–100 token blurb</text>
+  <text x="510" y="288" text-anchor="middle" font-size="12.5" fill="#4f46e5">situating the chunk in the</text>
+  <text x="510" y="308" text-anchor="middle" font-size="12.5" fill="#4f46e5">document — and nothing else</text>
+
+  <line x1="626" y1="264" x2="668" y2="264" stroke="#4f46e5" stroke-width="2.5" marker-end="url(#aIndigo3)"/>
+
+  <!-- Contextualized chunk -->
+  <rect x="676" y="188" width="316" height="152" rx="12" fill="#ecfdf5" stroke="#059669" stroke-width="2.5" filter="url(#soft3)"/>
+  <text x="834" y="222" text-anchor="middle" font-size="17" font-weight="700" fill="#065f46">Contextualized chunk</text>
+  <rect x="698" y="238" width="272" height="46" rx="7" fill="#ffffff" stroke="#a7f3d0" stroke-width="1.5"/>
+  <text x="712" y="258" font-size="11.5" fill="#047857">"This chunk is from an SEC filing on ACME</text>
+  <text x="712" y="275" font-size="11.5" fill="#047857">Corp's Q2 2023 performance…"  ← the blurb</text>
+  <rect x="698" y="292" width="272" height="30" rx="7" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.5"/>
+  <text x="712" y="312" font-size="11.5" fill="#334155">"The company's revenue grew by 3%…"</text>
+
+  <line x1="834" y1="340" x2="834" y2="392" stroke="#059669" stroke-width="2.5" marker-end="url(#aGreen3)"/>
+
+  <!-- Index -->
+  <rect x="676" y="400" width="316" height="86" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2.5" filter="url(#soft3)"/>
+  <text x="834" y="434" text-anchor="middle" font-size="17" font-weight="700" fill="#1e40af">Embed + BM25 index</text>
+  <text x="834" y="462" text-anchor="middle" font-size="12.5" fill="#2563eb">both indexes store the enriched text</text>
+
+  <!-- Side note -->
+  <rect x="1024" y="188" width="164" height="152" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="2"/>
+  <text x="1106" y="220" text-anchor="middle" font-size="13.5" font-weight="700" fill="#92400e">Two techniques,</text>
+  <text x="1106" y="240" text-anchor="middle" font-size="13.5" font-weight="700" fill="#92400e">one blurb</text>
+  <text x="1106" y="272" text-anchor="middle" font-size="12" fill="#b45309">Contextual</text>
+  <text x="1106" y="290" text-anchor="middle" font-size="12" fill="#b45309">Embeddings</text>
+  <text x="1106" y="312" text-anchor="middle" font-size="12" fill="#b45309">Contextual</text>
+  <text x="1106" y="330" text-anchor="middle" font-size="12" fill="#b45309">BM25</text>
+
+  <text x="180" y="452" text-anchor="middle" font-size="13" font-weight="700" fill="#0f172a">Prompt caching keeps it cheap</text>
+  <text x="180" y="476" text-anchor="middle" font-size="12.5" fill="#475569">≈ $1.02 per million</text>
+  <text x="180" y="495" text-anchor="middle" font-size="12.5" fill="#475569">document tokens, one-time</text>
+
+  <text x="620" y="534" text-anchor="middle" font-size="13" fill="#64748b" font-style="italic">Without caching you would resend the whole parent document for every single chunk — that is what makes this affordable at scale.</text>
+</svg>
