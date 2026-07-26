@@ -16,7 +16,7 @@ Full index with every page listed → **[concepts/](concepts/README.md)**
 |---|---|---|
 | [Retrieval-Augmented Generation (RAG)](concepts/rag/) | ✅ Live | How an LLM answers questions using *your* data instead of guessing |
 | ↳ [Contextual Retrieval](concepts/rag/contextual-retrieval.md) | ✅ Live | Fixing the context that chunking throws away — ~67% fewer retrieval misses |
-| Embeddings & Vector Search | 🚧 Planned | Turning text into numbers so machines can find "similar" meaning |
+| [Embeddings & Vector Search](concepts/embeddings/) | ✅ Live | Turning text into numbers so machines can find "similar" meaning |
 | Chunking Strategies | 🚧 Planned | How you split documents — and why it makes or breaks retrieval |
 | Prompt Engineering | 🚧 Planned | Structuring what you send the model to get what you want back |
 | Fine-tuning vs RAG | 🚧 Planned | Two ways to specialize a model, and when to reach for each |
@@ -48,13 +48,16 @@ Every concept is a self-contained folder — read one without needing any of the
 
 ```
 .
-├── README.md              # you are here
+├── README.md                       # you are here
 └── concepts/
-    ├── README.md          # index of every concept and page
-    └── rag/
-        ├── README.md              # RAG, from zero
-        ├── contextual-retrieval.md # deep dive
-        └── diagrams/              # every .svg used on the pages above
+    ├── README.md                   # index of every concept and page
+    ├── rag/
+    │   ├── README.md               # RAG, from zero
+    │   ├── contextual-retrieval.md # deep dive
+    │   └── diagrams/               # every .svg used on the pages above
+    └── embeddings/
+        ├── README.md               # embeddings & vector search
+        └── diagrams/
 ```
 
 Conventions: folders and files are lowercase `kebab-case`; each concept folder has a `README.md` as its entry point and keeps its diagrams in `diagrams/`.
