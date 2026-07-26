@@ -36,7 +36,7 @@ Everything below is about making step 2 retrieve *better*.
 
 RAG has two phases: an offline **preprocessing** phase that builds a searchable index, and a **runtime** phase that answers each query. The preprocessing pipeline:
 
-![Standard RAG preprocessing pipeline](contextual-standard-rag.svg)
+![Standard RAG preprocessing pipeline](diagrams/contextual-standard-rag.svg)
 
 Split the corpus into chunks of a few hundred tokens, turn each chunk into **both** a semantic embedding and a BM25 lexical entry, and store both for search. At runtime you embed the user's question, pull the closest chunks from each index, fuse and de-duplicate them, and hand the top-K to the model.
 
@@ -57,7 +57,7 @@ Running both and merging the results covers far more ground than either alone.
 
 The insight the whole technique turns on. When you chop a document into small chunks, each chunk loses the surrounding context that told you what it was *about*:
 
-![How chunking strips context from a document](contextual-context-loss.svg)
+![How chunking strips context from a document](diagrams/contextual-context-loss.svg)
 
 The chunk *"revenue grew by 3% over the previous quarter"* is true but stranded — it no longer says **whose** revenue or **which** quarter. So a query like *"ACME Q2 2023 revenue growth"* fails to retrieve it, even though the fact is sitting right there in the knowledge base.
 
@@ -77,7 +77,7 @@ The company's revenue grew by 3% over the previous quarter."
 
 Who writes the blurbs for millions of chunks? Claude does, automatically:
 
-![Contextual Retrieval preprocessing with Claude and prompt caching](contextual-retrieval-pipeline.svg)
+![Contextual Retrieval preprocessing with Claude and prompt caching](diagrams/contextual-retrieval-pipeline.svg)
 
 The generation prompt is short — hand the model the whole document plus the one chunk, and ask for a succinct context that situates the chunk, and nothing else:
 
@@ -100,7 +100,7 @@ Naively, you'd resend the entire parent document with every chunk — enormous c
 
 The first retrieval pass returns many candidates of varying quality — sometimes hundreds. A **reranker** is a second, more careful model that re-scores those candidates against the query and keeps only the best:
 
-![Full retrieval pipeline with reranking at query time](contextual-reranking-pipeline.svg)
+![Full retrieval pipeline with reranking at query time](diagrams/contextual-reranking-pipeline.svg)
 
 The recipe: retrieve the top ~150, rerank, keep the top 20. It adds a little latency and cost, so it's a tunable trade-off.
 
@@ -108,7 +108,7 @@ The recipe: retrieve the top ~150, rerank, keep the top 20. It adds a little lat
 
 Failure is measured as **1 − recall@20**: the share of relevant chunks that *fail* to appear in the top 20 retrieved. Lower is better. Each technique stacks:
 
-![Retrieval failure rate reduction](contextual-failure-rate.svg)
+![Retrieval failure rate reduction](diagrams/contextual-failure-rate.svg)
 
 | Configuration | Failure rate | Reduction vs. baseline |
 |---|---|---|
@@ -123,7 +123,7 @@ The winning combination: strong embeddings (Voyage or Gemini performed best) + c
 
 A relational database is built for exact-match and range queries (`WHERE price BETWEEN 10 AND 20`). A **vector database** answers a different question: *find the items most similar in meaning to this one.* It stores embeddings as points in a high-dimensional space, where similar meanings land near each other:
 
-![Vector database similarity search](contextual-vector-db.svg)
+![Vector database similarity search](diagrams/contextual-vector-db.svg)
 
 At query time: embed the question into the same space, then ask for the *k nearest points* (by cosine similarity or dot product). To stay fast at millions of vectors, these DBs use **approximate nearest neighbor (ANN)** indexes — most commonly **HNSW**, a layered graph you traverse in a few hops. "Approximate" is the trade: occasionally miss the true #1 match, in exchange for millisecond search.
 
@@ -135,7 +135,7 @@ Most vector DBs also let you attach **metadata** and filter on it — so you can
 
 There's a sweet spot with a clear failure mode on each side:
 
-![Chunk size tradeoff](contextual-chunk-size.svg)
+![Chunk size tradeoff](diagrams/contextual-chunk-size.svg)
 
 - **Too small:** a single idea gets split across chunks; the embedding has too little signal.
 - **Too large:** the embedding averages several unrelated ideas into a blurry "center of mass," and you waste context budget.
@@ -179,4 +179,4 @@ A concrete project: build a baseline RAG in Python over a real corpus, add the c
 
 ---
 
-← Back to [RAG](./) · [all concepts](../../)
+← Back to [RAG](./README.md) · [all concepts](../README.md) · [home](../../README.md)

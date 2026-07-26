@@ -10,9 +10,12 @@ Each concept gets its own page: hand-built diagrams first, short plain-English n
 
 ## 📚 Concepts
 
+Full index with every page listed → **[concepts/](concepts/README.md)**
+
 | Concept | Status | In one line |
 |---|---|---|
 | [Retrieval-Augmented Generation (RAG)](concepts/rag/) | ✅ Live | How an LLM answers questions using *your* data instead of guessing |
+| ↳ [Contextual Retrieval](concepts/rag/contextual-retrieval.md) | ✅ Live | Fixing the context that chunking throws away — ~67% fewer retrieval misses |
 | Embeddings & Vector Search | 🚧 Planned | Turning text into numbers so machines can find "similar" meaning |
 | Chunking Strategies | 🚧 Planned | How you split documents — and why it makes or breaks retrieval |
 | Prompt Engineering | 🚧 Planned | Structuring what you send the model to get what you want back |
@@ -29,13 +32,32 @@ Each concept gets its own page: hand-built diagrams first, short plain-English n
 
 **The data flow:**
 
-![RAG data flow](concepts/rag/rag-data-flow.svg)
+![RAG data flow](concepts/rag/diagrams/rag-data-flow.svg)
 
 **How it actually works — the components:**
 
-![How RAG works](concepts/rag/rag-how-it-works.svg)
+![How RAG works](concepts/rag/diagrams/rag-how-it-works.svg)
 
 Full write-up, glossary, and the two-phase breakdown → **[concepts/rag/](concepts/rag/)**
+
+---
+
+## 🧭 How this repo is laid out
+
+Every concept is a self-contained folder — read one without needing any of the others.
+
+```
+.
+├── README.md              # you are here
+└── concepts/
+    ├── README.md          # index of every concept and page
+    └── rag/
+        ├── README.md              # RAG, from zero
+        ├── contextual-retrieval.md # deep dive
+        └── diagrams/              # every .svg used on the pages above
+```
+
+Conventions: folders and files are lowercase `kebab-case`; each concept folder has a `README.md` as its entry point and keeps its diagrams in `diagrams/`.
 
 ---
 
