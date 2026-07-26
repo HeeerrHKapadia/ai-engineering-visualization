@@ -2,6 +2,10 @@
 
 > How a language model answers questions using **your** data — instead of guessing from what it memorized during training.
 
+**On this page:** [What it is](#what-it-is-in-one-paragraph) · [The data flow](#1-the-data-flow) · [How it works](#2-how-it-actually-works--the-two-phases) · [The one idea](#the-one-idea-to-remember) · [Glossary](#glossary)
+
+**Go deeper:** [Contextual Retrieval →](contextual-retrieval.md) — why naive chunking hurts retrieval, and how contextual embeddings + reranking cut retrieval failures by ~67%.
+
 ---
 
 ## What it is, in one paragraph
@@ -14,7 +18,7 @@ Large Language Models are trained on huge amounts of general text, but they don'
 
 Where the data goes, end to end — from raw sources all the way to a grounded answer.
 
-![RAG data flow](rag-data-flow.svg)
+![RAG data flow](diagrams/rag-data-flow.svg)
 
 ---
 
@@ -22,7 +26,7 @@ Where the data goes, end to end — from raw sources all the way to a grounded a
 
 RAG is really **two pipelines** that share one vector store.
 
-![How RAG works](rag-how-it-works.svg)
+![How RAG works](diagrams/rag-how-it-works.svg)
 
 ### ① Indexing (offline — runs once, and on updates)
 You prepare your knowledge *ahead of time*:
@@ -70,4 +74,14 @@ That's why, in practice, most of the engineering effort in a good RAG system goe
 
 ---
 
-← Back to [all concepts](../../)
+## What's in this folder
+
+| File | What it covers |
+|---|---|
+| [`README.md`](README.md) | This page — RAG from zero, the two pipelines, glossary |
+| [`contextual-retrieval.md`](contextual-retrieval.md) | Deep dive — chunking's context loss, contextual embeddings + BM25, reranking, vector DBs, chunk sizing |
+| [`diagrams/`](diagrams/) | All 9 source `.svg` diagrams, reusable on their own |
+
+---
+
+← Back to [all concepts](../README.md) · [home](../../README.md)
