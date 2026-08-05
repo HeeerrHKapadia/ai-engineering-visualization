@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 1 · LLM Fundamentals — AI Engineering Interview Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4F5F8; --paper:#FFFFFF; --ink:#14161C; --ink-soft:#4A4F5C; --ink-faint:#8A909E;
+    --line:#E3E6EC; --line-strong:#C9CDD6;
+    --accent:#3B3AE8; --accent-soft:#ECEBFF; --accent-ink:#2523B0;
+    --amber:#B5720A; --amber-soft:#FBF1DF;
+    --teal:#0E8C7E; --teal-soft:#E2F4F1;
+    --rose:#C0356B; --rose-soft:#FBE8F0;
+    --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --disp:'Space Grotesk',system-ui,sans-serif;
+    --body:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);
+    font-size:16.5px;line-height:1.62;-webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--accent);color:#fff}
+
+  /* ---------- layout ---------- */
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:236px 1fr;gap:44px}
+  @media(max-width:920px){.wrap{grid-template-columns:1fr;gap:0}}
+
+  /* ---------- sidebar nav ---------- */
+  aside{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;padding:34px 0 40px;border-right:1px solid var(--line)}
+  @media(max-width:920px){aside{position:static;height:auto;border-right:none;border-bottom:1px solid var(--line);padding:20px 0}}
+  .nav-badge{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:4px}
+  .nav-title{font-family:var(--disp);font-weight:700;font-size:19px;line-height:1.2;margin:0 0 22px}
+  nav a{display:block;font-size:13.5px;color:var(--ink-soft);text-decoration:none;padding:5px 0 5px 12px;border-left:2px solid transparent;line-height:1.35}
+  nav a:hover{color:var(--accent);border-left-color:var(--accent-soft)}
+  nav .grp{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin:18px 0 6px;padding-left:12px;font-weight:600}
+
+  main{padding:38px 0 120px;min-width:0}
+
+  /* ---------- masthead ---------- */
+  .mast{border:1px solid var(--line);background:var(--paper);border-radius:16px;padding:34px 34px 30px;margin-bottom:40px;position:relative;overflow:hidden}
+  .mast:before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:26px 26px;opacity:.5;mask-image:radial-gradient(120% 120% at 100% 0%,#000,transparent 60%)}
+  .mast>*{position:relative}
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  .mast h1{font-family:var(--disp);font-weight:700;font-size:34px;line-height:1.08;margin:10px 0 8px;letter-spacing:-.01em}
+  .mast p{margin:0;max-width:60ch;color:var(--ink-soft);font-size:15.5px}
+  .mast .meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+  .chip{font-family:var(--mono);font-size:11.5px;padding:5px 10px;border-radius:20px;background:var(--accent-soft);color:var(--accent-ink);font-weight:500}
+
+  /* ---------- section + concept ---------- */
+  section{margin-bottom:14px}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin:46px 0 8px;padding-bottom:10px;border-bottom:2px solid var(--ink)}
+  .sec-num{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--accent);white-space:nowrap}
+  .sec-head h2{font-family:var(--disp);font-weight:700;font-size:25px;margin:0;letter-spacing:-.01em}
+  .sec-intro{color:var(--ink-soft);font-size:15px;margin:0 0 8px}
+
+  .concept{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin:16px 0}
+  .concept h3{font-family:var(--disp);font-size:18.5px;font-weight:600;margin:0 0 4px;line-height:1.25}
+  .q{font-family:var(--mono);font-size:12.5px;color:var(--ink-faint);font-weight:500;margin:0 0 12px;letter-spacing:.01em}
+  .concept p{margin:11px 0}
+  .concept p:first-of-type{margin-top:0}
+  strong{font-weight:600;color:var(--ink)}
+  code{font-family:var(--mono);font-size:.87em;background:#F0F1F5;padding:1.5px 5px;border-radius:5px;color:var(--accent-ink)}
+  .lead{font-size:16.5px}
+
+  /* ---------- callouts ---------- */
+  .call{border-radius:10px;padding:13px 16px;margin:14px 0;font-size:14.5px;line-height:1.55;border:1px solid}
+  .call .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:600;display:block;margin-bottom:4px}
+  .call.ex{background:var(--teal-soft);border-color:#BCE3DD}
+  .call.ex .lbl{color:var(--teal)}
+  .call.rec{background:var(--amber-soft);border-color:#EBD6AC}
+  .call.rec .lbl{color:var(--amber)}
+  .call.latest{background:var(--accent-soft);border-color:#CFCDFB}
+  .call.latest .lbl{color:var(--accent-ink)}
+  .call.pit{background:var(--rose-soft);border-color:#F0C2D5}
+  .call.pit .lbl{color:var(--rose)}
+  .call p{margin:6px 0 0}
+  .call p:first-child{margin-top:0}
+
+  /* ---------- figure ---------- */
+  figure{margin:20px 0;border:1px solid var(--line-strong);border-radius:12px;overflow:hidden;background:var(--paper)}
+  figure .figtop{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-bottom:1px solid var(--line);background:#FbFBFD}
+  figure .fignum{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--accent);font-weight:600}
+  figure .figttl{font-family:var(--mono);font-size:11px;color:var(--ink-faint)}
+  figure .figbody{padding:20px 18px;overflow-x:auto}
+  figure svg{display:block;margin:0 auto;max-width:100%;height:auto}
+  figcaption{padding:0 16px 14px;font-size:13px;color:var(--ink-soft);font-style:italic}
+
+  /* svg helpers */
+  .s-box{fill:var(--paper);stroke:var(--ink);stroke-width:1.5}
+  .s-accent{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.5}
+  .s-teal{fill:var(--teal-soft);stroke:var(--teal);stroke-width:1.5}
+  .s-amber{fill:var(--amber-soft);stroke:var(--amber);stroke-width:1.5}
+  .s-t{font-family:var(--body);font-size:13px;fill:var(--ink)}
+  .s-tm{font-family:var(--mono);font-size:12px;fill:var(--ink)}
+  .s-ts{font-family:var(--mono);font-size:10.5px;fill:var(--ink-soft)}
+  .s-tw{font-family:var(--body);font-size:12px;fill:#fff;font-weight:500}
+  .s-line{stroke:var(--ink-soft);stroke-width:1.5;fill:none}
+  .s-flow{stroke:var(--accent);stroke-width:2;fill:none}
+
+  /* tables */
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);font-weight:600;border-bottom:1.5px solid var(--line-strong)}
+  tr td:first-child{font-weight:600;white-space:nowrap}
+
+  ul.tight{margin:10px 0;padding-left:20px}
+  ul.tight li{margin:5px 0}
+
+  .divider{height:1px;background:var(--line);margin:34px 0}
+  .foot{margin-top:60px;padding-top:24px;border-top:2px solid var(--ink);font-size:14px;color:var(--ink-soft)}
+  .foot strong{color:var(--ink)}
+  h4.mini{font-family:var(--disp);font-size:15px;font-weight:600;margin:16px 0 4px;color:var(--accent-ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<aside>
+  <div style="padding:0 12px">
+    <div class="nav-badge">Module 01 / 12</div>
+    <div class="nav-title">LLM Fundamentals</div>
+  </div>
+  <nav>
+    <div class="grp">A · Foundations</div>
+    <a href="#foundation">Foundation models</a>
+    <a href="#what-llm">What is an LLM</a>
+    <a href="#inside">Inside ChatGPT (inference)</a>
+    <a href="#autoreg">Autoregressive models</a>
+    <a href="#openclosed">Open vs closed source</a>
+    <div class="grp">B · The Transformer</div>
+    <a href="#transformer">Transformer architecture</a>
+    <a href="#enc-dec">Encoder / decoder types</a>
+    <a href="#residual">Residual + FFN</a>
+    <div class="grp">C · Tokens &amp; Embeddings</div>
+    <a href="#tokenization">Tokenization &amp; BPE</a>
+    <a href="#embeddings">Embeddings</a>
+    <a href="#posenc">Positional encoding &amp; RoPE</a>
+    <div class="grp">D · Attention</div>
+    <a href="#qkv">Q, K, V + self-attention</a>
+    <a href="#scaling">√dₖ scaling &amp; softmax</a>
+    <a href="#masking">Causal masking</a>
+    <a href="#mha">Multi-head → GQA → MLA</a>
+    <a href="#flash">Flash Attention</a>
+    <a href="#kvcache">KV cache</a>
+    <div class="grp">E · Normalization</div>
+    <a href="#norm">LayerNorm &amp; RMSNorm</a>
+    <div class="grp">F · Generation</div>
+    <a href="#logits">Logits</a>
+    <a href="#context">Context window</a>
+    <a href="#temp">Temperature</a>
+    <a href="#sampling">Top-k / Top-p</a>
+    <a href="#latency">First-token latency</a>
+    <a href="#loss">Cross-entropy loss</a>
+    <div class="grp">G · Scaling &amp; Efficiency</div>
+    <a href="#moe">Mixture of Experts</a>
+    <a href="#distill">Distillation</a>
+    <a href="#slm-lrm">SLMs &amp; LRMs</a>
+    <div class="grp">H · Alignment</div>
+    <a href="#align">RLHF · PPO · DPO · GRPO</a>
+    <div class="grp">I · Frontier</div>
+    <a href="#frontier">RLMs · DLMs · Continual · ViT</a>
+    <div class="grp">J · Production</div>
+    <a href="#troubleshoot">Troubleshooting drills</a>
+  </nav>
+</aside>
+
+<main>
+  <div class="mast">
+    <div class="kicker">AI Engineering · Interview Prep</div>
+    <h1>Module 1 — LLM Fundamentals</h1>
+    <p>Deep, interview-ready answers with worked examples, diagrams, and the framing recruiters and staff-level interviewers actually probe for in 2026. Every concept ends with what to <em>say out loud</em> in the room.</p>
+    <div class="meta">
+      <span class="chip">RoPE + GQA + SwiGLU + RMSNorm</span>
+      <span class="chip">MoE · MLA · Flash Attention</span>
+      <span class="chip">Current to mid-2026</span>
+    </div>
+  </div>
+
+  <p class="lead" style="color:var(--ink-soft);margin-bottom:8px">
+    <strong style="color:var(--ink)">How to use this.</strong> Read top-to-bottom once for the mental model, then use the sidebar to drill specific questions. The <span style="color:var(--amber);font-weight:600">amber</span> boxes are the "say-this-in-the-interview" lines, <span style="color:var(--teal);font-weight:600">teal</span> is a concrete example, <span style="color:var(--accent);font-weight:600">indigo</span> is what's newest in the field, and <span style="color:var(--rose);font-weight:600">rose</span> is the trap candidates fall into.
+  </p>
+
+  <!-- ================= SECTION A ================= -->
+  <div class="sec-head"><span class="sec-num">A</span><h2>Foundations</h2></div>
+  <p class="sec-intro">Before attention math, get the framing right: what a foundation model <em>is</em>, and why it turned "training a model" into "building on top of one."</p>
+
+  <div class="concept" id="foundation">
+    <h3>Foundation models &amp; how they changed AI engineering</h3>
+    <p class="q">Q · What are foundation models, and how have they changed AI engineering?</p>
+    <p>A <strong>foundation model</strong> is a single large model pre-trained on broad, internet-scale data using self-supervised learning, such that it can be adapted (via prompting, RAG, or fine-tuning) to a huge range of downstream tasks it was never explicitly trained for. The term was coined by Stanford's CRFM in 2021. The key property is <strong>emergence</strong>: capabilities like translation, code generation, and reasoning appear as scale increases, without task-specific supervision.</p>
+    <p>The shift for engineering is structural. The old ML paradigm was <strong>one model per task</strong>: collect labeled data, train, deploy, repeat. The foundation-model paradigm is <strong>one model, many tasks</strong>: you start from a pre-trained model and spend your effort on the <em>harness</em> around it — prompts, retrieval, tools, evals, guardrails. AI engineering is largely the discipline of building reliable products on top of a model you did not train.</p>
+    <div class="call rec"><span class="lbl">Say this in the interview</span><p>"Foundation models moved the bottleneck from <em>model training</em> to <em>system design</em>. My job as an AI engineer is less about gradient descent and more about context, retrieval, evaluation, and cost — getting a general model to behave reliably on a specific, high-stakes task."</p></div>
+    <div class="call latest"><span class="lbl">2026 context</span><p>The frontier is now multimodal and reasoning-native by default (models "think" before answering). Foundation models are increasingly <em>agentic</em> — expected to call tools and run multi-step workflows — so "foundation model" now implies a tool-using reasoner, not just a text predictor.</p></div>
+  </div>
+
+  <div class="concept" id="what-llm">
+    <h3>What is an LLM, and how does it work?</h3>
+    <p class="q">Q · What is a Large Language Model, and how does it work?</p>
+    <p>An LLM is a neural network (almost always a <strong>Transformer</strong>) trained to predict the next token in a sequence given all previous tokens. That is the <em>entire</em> training objective: <code>P(next token | all previous tokens)</code>. "Large" refers to parameter count (billions to trillions) and training-data scale (trillions of tokens).</p>
+    <p>The profound part is that next-token prediction, done well enough at scale, forces the model to build internal representations of grammar, facts, style, and rudimentary reasoning — because predicting the next token in <em>"The capital of France is ___"</em> requires knowing geography. It never learns "facts" as a lookup table; it learns a compressed statistical model of language and the world implicit in that language.</p>
+    <div class="call ex"><span class="lbl">Concrete example</span><p>Give GPT-style model <em>"2 + 2 ="</em>. It doesn't "do math" — it computes a probability distribution over its ~100k-token vocabulary where <code>"4"</code> has by far the highest probability, because sequences ending in <em>"2 + 2 ="</em> were overwhelmingly followed by <code>"4"</code> in training. Everything the model does is this one operation, repeated.</p></div>
+    <div class="call pit"><span class="lbl">Trap to avoid</span><p>Don't say the LLM "looks up" or "stores" answers. It has no database. Weaker candidates describe it as retrieval; strong ones describe it as a <em>parametric compression of the training distribution</em> — which is exactly why it hallucinates and why RAG exists.</p></div>
+  </div>
+
+  <div class="concept" id="inside">
+    <h3>Inside ChatGPT: what happens after you hit Enter</h3>
+    <p class="q">Q · Walk through the full inference pipeline for a single request.</p>
+    <p>This is a favorite because it tests whether you understand the whole pipeline, not just "attention." Here is the end-to-end path of one prompt.</p>
+
+    <figure>
+      <div class="figtop"><span class="fignum">FIG. 01</span><span class="figttl">inference_pipeline.svg</span></div>
+      <div class="figbody">
+        <svg viewBox="0 0 860 210" role="img" aria-label="LLM inference pipeline">
+          <defs><marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#3B3AE8"/></marker></defs>
+          <!-- boxes -->
+          <g>
+            <rect class="s-box" x="8" y="70" width="96" height="56" rx="8"/>
+            <text class="s-t" x="56" y="94" text-anchor="middle" font-weight="600">Prompt</text>
+            <text class="s-ts" x="56" y="111" text-anchor="middle">"Explain RAG"</text>
+          </g>
+          <g>
+            <rect class="s-accent" x="132" y="70" width="104" height="56" rx="8"/>
+            <text class="s-t" x="184" y="90" text-anchor="middle" font-weight="600">Tokenize</text>
+            <text class="s-ts" x="184" y="107" text-anchor="middle">→ token IDs</text>
+            <text class="s-ts" x="184" y="120" text-anchor="middle">[8115, 402…]</text>
+          </g>
+          <g>
+            <rect class="s-accent" x="264" y="70" width="104" height="56" rx="8"/>
+            <text class="s-t" x="316" y="90" text-anchor="middle" font-weight="600">Embed +</text>
+            <text class="s-t" x="316" y="105" text-anchor="middle" font-weight="600">position</text>
+            <text class="s-ts" x="316" y="120" text-anchor="middle">vectors</text>
+          </g>
+          <g>
+            <rect class="s-amber" x="396" y="52" width="150" height="92" rx="8"/>
+            <text class="s-t" x="471" y="76" text-anchor="middle" font-weight="600">N× Transformer</text>
+            <text class="s-t" x="471" y="92" text-anchor="middle" font-weight="600">blocks</text>
+            <text class="s-ts" x="471" y="112" text-anchor="middle">attention + FFN</text>
+            <text class="s-ts" x="471" y="126" text-anchor="middle">(the "prefill")</text>
+          </g>
+          <g>
+            <rect class="s-box" x="574" y="70" width="96" height="56" rx="8"/>
+            <text class="s-t" x="622" y="90" text-anchor="middle" font-weight="600">Logits</text>
+            <text class="s-ts" x="622" y="107" text-anchor="middle">score/token</text>
+            <text class="s-ts" x="622" y="120" text-anchor="middle">→ softmax</text>
+          </g>
+          <g>
+            <rect class="s-teal" x="698" y="70" width="104" height="56" rx="8"/>
+            <text class="s-t" x="750" y="90" text-anchor="middle" font-weight="600">Sample</text>
+            <text class="s-ts" x="750" y="107" text-anchor="middle">temp / top-p</text>
+            <text class="s-ts" x="750" y="120" text-anchor="middle">→ 1 token</text>
+          </g>
+          <!-- arrows -->
+          <line class="s-flow" x1="104" y1="98" x2="128" y2="98" marker-end="url(#ar)"/>
+          <line class="s-flow" x1="236" y1="98" x2="260" y2="98" marker-end="url(#ar)"/>
+          <line class="s-flow" x1="368" y1="98" x2="392" y2="98" marker-end="url(#ar)"/>
+          <line class="s-flow" x1="546" y1="98" x2="570" y2="98" marker-end="url(#ar)"/>
+          <line class="s-flow" x1="670" y1="98" x2="694" y2="98" marker-end="url(#ar)"/>
+          <!-- feedback loop -->
+          <path class="s-flow" stroke-dasharray="5 4" d="M750,126 L750,180 L316,180 L316,128" marker-end="url(#ar)"/>
+          <text class="s-ts" x="533" y="197" text-anchor="middle" fill="#3B3AE8">append token, repeat — the autoregressive loop (this phase = "decode")</text>
+        </svg>
+      </div>
+      <figcaption>One request, six stages. The heavy one-time pass over your prompt is <em>prefill</em>; every generated token after that is a <em>decode</em> step that reuses cached state.</figcaption>
+    </figure>
+
+    <p>Stage by stage: <strong>(1) Tokenize</strong> — your text is split into subword tokens and mapped to integer IDs. <strong>(2) Embed</strong> — each ID becomes a high-dimensional vector; positional information is injected (RoPE today). <strong>(3) Transformer blocks</strong> — the vectors flow through N stacked layers of attention + feed-forward, mixing context into every position; this pass over the whole prompt is <strong>prefill</strong>. <strong>(4) Logits</strong> — the final layer produces one score per vocabulary token. <strong>(5) Sample</strong> — softmax turns logits into probabilities; a decoding strategy (temperature, top-p) picks one token. <strong>(6) Loop</strong> — that token is appended and the model predicts the next one (<strong>decode</strong>), reusing the KV cache so it doesn't re-process the whole prompt each step. Repeat until an end-of-sequence token or length limit.</p>
+    <div class="call rec"><span class="lbl">Say this in the interview</span><p>Name the two phases explicitly: <strong>prefill</strong> (compute-bound, processes the whole prompt in parallel, drives time-to-first-token) and <strong>decode</strong> (memory-bandwidth-bound, one token at a time, drives inter-token latency). Interviewers immediately know you've thought about serving, not just modeling.</p></div>
+  </div>
+
+  <div class="concept" id="autoreg">
+    <h3>Autoregressive models &amp; masked language modeling</h3>
+    <p class="q">Q · What are autoregressive models? Autoregressive vs masked language modeling?</p>
+    <p>An <strong>autoregressive (AR)</strong> model generates a sequence one element at a time, each conditioned on everything generated so far: <code>P(x₁)·P(x₂|x₁)·P(x₃|x₁,x₂)…</code>. GPT-family LLMs are autoregressive and <em>left-to-right</em> — this is why they generate token by token and why latency scales with output length.</p>
+    <p><strong>Masked language modeling (MLM)</strong>, used by BERT, is different: random tokens in the input are masked and the model predicts them using <em>both</em> left and right context simultaneously. This makes BERT excellent at <em>understanding</em> (classification, embeddings, retrieval) but it cannot naturally <em>generate</em> fluent text left-to-right.</p>
+    <table>
+      <tr><th></th><th>Autoregressive (GPT)</th><th>Masked (BERT)</th></tr>
+      <tr><td>Objective</td><td>Predict next token</td><td>Fill in masked tokens</td></tr>
+      <tr><td>Context</td><td>Left only (causal)</td><td>Bidirectional</td></tr>
+      <tr><td>Best at</td><td>Generation, chat, agents</td><td>Understanding, embeddings</td></tr>
+      <tr><td>Attention</td><td>Masked (can't see future)</td><td>Full (sees everything)</td></tr>
+    </table>
+    <div class="call latest"><span class="lbl">2026 context</span><p>The line is blurring: <strong>Diffusion Language Models</strong> (covered in §I) generate <em>non</em>-autoregressively — refining all tokens in parallel — and are a hot research direction precisely because AR's token-by-token latency is the main serving bottleneck.</p></div>
+  </div>
+
+  <div class="concept" id="openclosed">
+    <h3>Open-source vs closed-source LLMs</h3>
+    <p class="q">Q · What's the difference, and when would you choose one over the other?</p>
+    <p><strong>Closed / proprietary</strong> (GPT, Claude, Gemini): accessed via API, weights hidden, you pay per token. You get frontier quality, zero infra burden, and instant upgrades — but no control over the model, data leaves your boundary, and cost scales linearly with usage. <strong>Open-weight</strong> (Llama, Qwen, Mistral, DeepSeek, gpt-oss): download the weights, self-host or fine-tune, full data control, fixed infra cost — but you own the GPUs, ops, and the quality gap (which is narrowing fast).</p>
+    <table>
+      <tr><th>Decision driver</th><th>Lean closed (API)</th><th>Lean open (self-host)</th></tr>
+      <tr><td>Data sensitivity</td><td>Low / standard</td><td>Regulated, PII, on-prem required</td></tr>
+      <tr><td>Volume</td><td>Low-to-medium, spiky</td><td>High, steady (amortizes GPUs)</td></tr>
+      <tr><td>Customization</td><td>Prompt/RAG is enough</td><td>Need fine-tuning / weight control</td></tr>
+      <tr><td>Team</td><td>Small, ship fast</td><td>Have ML/infra muscle</td></tr>
+    </table>
+    <div class="call rec"><span class="lbl">Say this in the interview</span><p>"I'd prototype on a closed API to validate the product, then evaluate an open model for the specific task. If a fine-tuned 8B open model hits my quality bar at a fraction of the per-token cost and keeps data in-house, I self-host. The decision is TCO + data governance, not ideology."</p></div>
+  </div>
+
+  <!-- ================= SECTION B ================= -->
+  <div class="sec-head"><span class="sec-num">B</span><h2>The Transformer</h2></div>
+  <p class="sec-intro">Seven years on, the architecture is essentially unchanged in shape. What moved is the internals — and interviewers expect you to know both the skeleton and the 2026 upgrades bolted onto it.</p>
+
+  <div class="concept" id="transformer">
+    <h3>Transformer architecture &amp; its key components</h3>
+    <p class="q">Q · What is the Transformer architecture, how does it work, and what are its components?</p>
+    <p>The Transformer (Vaswani et al., <em>"Attention Is All You Need,"</em> 2017) replaced recurrence (RNNs/LSTMs) with <strong>self-attention</strong>, letting the model relate every token to every other token in parallel — which is what made training on internet-scale data feasible. Modern LLMs use the <strong>decoder-only</strong> variant.</p>
+    <p>A decoder block is a stack of identical layers. Each layer has two sub-blocks, each wrapped in a residual connection and normalization:</p>
+    <ul class="tight">
+      <li><strong>Multi-head self-attention</strong> — every token gathers information from the tokens it should attend to.</li>
+      <li><strong>Feed-forward network (FFN/MLP)</strong> — a per-token nonlinear transformation that does most of the "thinking"/knowledge storage.</li>
+    </ul>
+
+    <figure>
+      <div class="figtop"><span class="fignum">FIG. 02</span><span class="figttl">decoder_block.svg — the residual stream</span></div>
+      <div class="figbody">
+        <svg viewBox="0 0 620 300" role="img" aria-label="Transformer decoder block">
+          <defs><marker id="ar2" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#4A4F5C"/></marker></defs>
+          <!-- residual stream spine -->
+          <line class="s-line" x1="120" y1="285" x2="120" y2="20" marker-end="url(#ar2)"/>
+          <text class="s-ts" x="120" y="298" text-anchor="middle">token vectors (residual stream)</text>
+          <!-- pre-norm 1 -->
+          <rect class="s-box" x="180" y="228" width="120" height="34" rx="6"/>
+          <text class="s-tm" x="240" y="250" text-anchor="middle">RMSNorm</text>
+          <!-- attention -->
+          <rect class="s-accent" x="180" y="176" width="200" height="40" rx="6"/>
+          <text class="s-t" x="280" y="200" text-anchor="middle" font-weight="600">Multi-Head Self-Attention</text>
+          <!-- add 1 -->
+          <circle cx="120" cy="160" r="13" class="s-box"/><text class="s-tm" x="120" y="165" text-anchor="middle">+</text>
+          <text class="s-ts" x="150" y="150" >residual add</text>
+          <!-- pre-norm 2 -->
+          <rect class="s-box" x="180" y="104" width="120" height="34" rx="6"/>
+          <text class="s-tm" x="240" y="126" text-anchor="middle">RMSNorm</text>
+          <!-- ffn -->
+          <rect class="s-amber" x="180" y="52" width="200" height="40" rx="6"/>
+          <text class="s-t" x="280" y="76" text-anchor="middle" font-weight="600">Feed-Forward (SwiGLU)</text>
+          <!-- add 2 -->
+          <circle cx="120" cy="36" r="13" class="s-box"/><text class="s-tm" x="120" y="41" text-anchor="middle">+</text>
+          <!-- branch lines attention -->
+          <path class="s-line" d="M120,245 L180,245"/>
+          <path class="s-line" d="M300,196 C340,196 360,196 380,196"/>
+          <path class="s-line" d="M380,196 C420,196 420,160 133,160" marker-end="url(#ar2)"/>
+          <!-- branch lines ffn -->
+          <path class="s-line" d="M120,121 L180,121"/>
+          <path class="s-line" d="M300,72 C340,72 360,72 380,72"/>
+          <path class="s-line" d="M380,72 C430,72 430,36 133,36" marker-end="url(#ar2)"/>
+          <!-- label -->
+          <rect x="440" y="120" width="168" height="70" rx="8" fill="none" stroke="var(--line-strong)" stroke-dasharray="4 3"/>
+          <text class="s-ts" x="524" y="142" text-anchor="middle">×N layers</text>
+          <text class="s-ts" x="524" y="158" text-anchor="middle">(e.g. 32, 80, 120)</text>
+          <text class="s-ts" x="524" y="174" text-anchor="middle">stacked identically</text>
+        </svg>
+      </div>
+      <figcaption>The <strong>residual stream</strong> (left spine) runs unbroken top to bottom. Each sub-block <em>reads</em> from it, computes, and <em>adds</em> its result back — never overwriting. This is why deep stacks train at all.</figcaption>
+    </figure>
+
+    <p>Data flow through one block (modern "pre-norm" order): normalize → attention → add back to stream → normalize → FFN → add back to stream. Stack N of these, then a final norm and a projection to vocabulary logits.</p>
+    <div class="call latest"><span class="lbl">The 2026 baseline recipe</span><p>When an interviewer asks about "the Transformer," name the <em>current</em> stack, not the 2017 one. Shipping decoder LLMs (Llama, Qwen, Gemma, Mistral) use: <strong>RoPE</strong> positions · <strong>GQA</strong> attention · <strong>SwiGLU</strong> FFN activation · <strong>RMSNorm</strong> · <strong>pre-normalization</strong> · <strong>no bias terms</strong>. DeepSeek swaps GQA for <strong>MLA</strong> and the FFN for <strong>MoE</strong>. Knowing this recipe by heart signals you read model papers.</p></div>
+  </div>
+
+  <div class="concept" id="enc-dec">
+    <h3>Encoder-only vs decoder-only vs encoder-decoder</h3>
+    <p class="q">Q · What is the difference between the three Transformer configurations?</p>
+    <figure>
+      <div class="figtop"><span class="fignum">FIG. 03</span><span class="figttl">architecture_families.svg</span></div>
+      <div class="figbody">
+        <svg viewBox="0 0 700 190" role="img" aria-label="Encoder, decoder, encoder-decoder">
+          <!-- encoder only -->
+          <rect class="s-teal" x="20" y="40" width="150" height="90" rx="10"/>
+          <text class="s-t" x="95" y="30" text-anchor="middle" font-weight="600">Encoder-only</text>
+          <text class="s-ts" x="95" y="70" text-anchor="middle">bidirectional</text>
+          <text class="s-ts" x="95" y="88" text-anchor="middle">sees full input</text>
+          <text class="s-tm" x="95" y="112" text-anchor="middle" fill="var(--teal)">BERT</text>
+          <text class="s-ts" x="95" y="150" text-anchor="middle">understand / embed</text>
+          <!-- decoder only -->
+          <rect class="s-accent" x="275" y="40" width="150" height="90" rx="10"/>
+          <text class="s-t" x="350" y="30" text-anchor="middle" font-weight="600">Decoder-only</text>
+          <text class="s-ts" x="350" y="70" text-anchor="middle">causal (L→R)</text>
+          <text class="s-ts" x="350" y="88" text-anchor="middle">masks the future</text>
+          <text class="s-tm" x="350" y="112" text-anchor="middle" fill="var(--accent)">GPT · Llama · Claude</text>
+          <text class="s-ts" x="350" y="150" text-anchor="middle">generate (all modern LLMs)</text>
+          <!-- enc-dec -->
+          <rect class="s-teal" x="520" y="40" width="70" height="90" rx="10"/>
+          <rect class="s-accent" x="600" y="40" width="70" height="90" rx="10"/>
+          <text class="s-t" x="595" y="30" text-anchor="middle" font-weight="600">Encoder-Decoder</text>
+          <text class="s-ts" x="555" y="88" text-anchor="middle">enc</text>
+          <text class="s-ts" x="635" y="88" text-anchor="middle">dec</text>
+          <text class="s-tm" x="595" y="112" text-anchor="middle" fill="var(--ink-soft)">T5 · Whisper</text>
+          <text class="s-ts" x="595" y="150" text-anchor="middle">translate / seq-to-seq</text>
+        </svg>
+      </div>
+      <figcaption>Decoder-only won the LLM era because next-token prediction on raw text scales cleanest and unifies every task as "generate the continuation."</figcaption>
+    </figure>
+    <p><strong>Encoder-only (BERT):</strong> bidirectional attention, great for classification/embeddings, can't generate. <strong>Decoder-only (GPT, Llama, Claude):</strong> causal attention, generates autoregressively — the dominant LLM design. <strong>Encoder-decoder (T5, Whisper):</strong> encoder ingests the full input, decoder generates output attending to it via <em>cross-attention</em> — natural for translation and speech-to-text where input and output are distinct sequences.</p>
+    <div class="call rec"><span class="lbl">Say this in the interview</span><p>"Modern chat LLMs are decoder-only. The field consolidated there because it's the simplest thing that scales — you can frame translation, QA, summarization, and coding all as next-token prediction, so one architecture and one objective cover everything."</p></div>
+  </div>
+
+  <div class="concept" id="residual">
+    <h3>Residual connections &amp; the feed-forward network</h3>
+    <p class="q">Q · What are skip/residual connections, and what are FFNs in LLMs?</p>
+    <p><strong>Residual (skip) connections</strong> add a sub-block's input directly to its output: <code>output = x + SubBlock(x)</code>. Two reasons they're essential: (1) gradients flow straight through the <code>+ x</code> path during backprop, defeating the <em>vanishing-gradient</em> problem that stopped very deep nets from training; (2) each layer only needs to learn a <em>refinement</em> to the running representation, not rebuild it. The "residual stream" is the unbroken information highway you saw in FIG. 02.</p>
+    <p>The <strong>feed-forward network</strong> is a two-layer MLP applied independently to each token position. It typically expands the dimension ~4× and contracts back (e.g. 4096 → 11008 → 4096). Two things to know: FFNs hold the <em>majority</em> of a model's parameters — they're where much factual "knowledge" is stored — and modern models use the <strong>SwiGLU</strong> activation (a gated variant) instead of ReLU/GELU because it measurably improves quality.</p>
+    <div class="call ex"><span class="lbl">Concrete example</span><p>Attention decides <em>"the word 'it' refers to 'the cat'"</em> (routing information between positions). The FFN then does the per-token computation — <em>"given this is a cat, activate cat-related features."</em> Attention moves information <em>between</em> tokens; the FFN transforms information <em>within</em> a token. In MoE models, this FFN is exactly what gets split into experts (§G).</p></div>
+  </div>
+
+
+  <!-- ================= SECTION C ================= -->
+  <div class="sec-head"><span class="sec-num">C</span><h2>Tokens &amp; Embeddings</h2></div>
+  <p class="sec-intro">Models don't see text — they see integer IDs mapped to vectors. Tokenization bugs cause a shocking share of production failures, so this section punches above its weight in interviews.</p>
+
+  <div class="concept" id="tokenization">
+    <h3>Tokenization, BPE, WordPiece &amp; SentencePiece</h3>
+    <p class="q">Q · What is tokenization? Explain BPE, WordPiece, and SentencePiece.</p>
+    <p><strong>Tokenization</strong> converts raw text into the discrete units (tokens) the model actually processes, then to integer IDs. Modern LLMs use <strong>subword</strong> tokenization — a middle ground between characters (too many tokens, no meaning) and whole words (vocabulary explodes, can't handle unseen words). Subwords keep common words whole while splitting rare ones into reusable pieces, so the model can represent <em>any</em> string, including typos and new words.</p>
+
+    <p><strong>Byte Pair Encoding (BPE)</strong> — used by GPT and Llama — is a frequency-driven merge algorithm. Start with individual characters/bytes, then repeatedly merge the most frequent adjacent pair into a new token, until you hit a target vocabulary size.</p>
+
+    <figure>
+      <div class="figtop"><span class="fignum">FIG. 04</span><span class="figttl">bpe_merges.svg</span></div>
+      <div class="figbody">
+        <svg viewBox="0 0 640 200" role="img" aria-label="BPE merge process">
+          <text class="s-tm" x="20" y="30">corpus:  l o w  ·  l o w  ·  l o w e s t</text>
+          <!-- step rows -->
+          <text class="s-ts" x="20" y="66">step 0 (chars):</text>
+          <text class="s-tm" x="150" y="66" fill="var(--ink)">l · o · w · e · s · t</text>
+          <line class="s-line" x1="20" y1="78" x2="620" y2="78" stroke-dasharray="3 3" stroke="var(--line)"/>
+
+          <text class="s-ts" x="20" y="104">merge 1:  "l"+"o" →</text>
+          <rect class="s-accent" x="185" y="90" width="34" height="20" rx="4"/>
+          <text class="s-tm" x="202" y="104" text-anchor="middle" fill="var(--accent-ink)">lo</text>
+          <text class="s-tm" x="240" y="104" fill="var(--ink)">w  e  s  t</text>
+
+          <text class="s-ts" x="20" y="140">merge 2:  "lo"+"w" →</text>
+          <rect class="s-accent" x="200" y="126" width="46" height="20" rx="4"/>
+          <text class="s-tm" x="223" y="140" text-anchor="middle" fill="var(--accent-ink)">low</text>
+          <text class="s-tm" x="265" y="140" fill="var(--ink)">e  s  t</text>
+
+          <text class="s-ts" x="20" y="176">result:</text>
+          <rect class="s-teal" x="90" y="162" width="46" height="20" rx="4"/>
+          <text class="s-tm" x="113" y="176" text-anchor="middle" fill="var(--teal)">low</text>
+          <text class="s-tm" x="150" y="176" fill="var(--ink)">+ e + s + t   ("lowest" = 4 tokens, "low" = 1)</text>
+        </svg>
+      </div>
+      <figcaption>BPE learns "low" as a single token because it's frequent, but keeps "est" splittable — so it can spell out any rare word from known pieces.</figcaption>
+    </figure>
+
+    <p><strong>WordPiece</strong> (BERT) is nearly identical but merges by a <em>likelihood</em> criterion (does the merge increase the training-data probability?) rather than raw frequency. <strong>SentencePiece</strong> (Llama, T5, Gemma) is not a different merge rule but a different <em>framework</em>: it treats the input as a raw byte/character stream <em>including spaces</em> (encoded as <code>▁</code>), so it's fully reversible and language-agnostic — critical for languages like Chinese or Japanese that don't delimit words with spaces. It can run BPE or unigram internally.</p>
+
+    <div class="call pit"><span class="lbl">The trap recruiters love</span><p>Tokenization explains classic LLM failures: it can't count the <em>r</em>'s in "strawberry" reliably because the word is a few opaque tokens, not letters; math breaks because numbers tokenize inconsistently; and <strong>your API bill is per token, not per word</strong> (~1 token ≈ 0.75 English words, but far worse for code, JSON, and non-English text). If your app serves Hindi or code, measure real token counts — costs can be 2–3× higher than an English estimate.</p></div>
+    <div class="call rec"><span class="lbl">Say this in the interview</span><p>"Domain terms that split into meaningless subwords hurt quality and cost. Fixes: add domain tokens to the vocabulary and continue-pretrain, or pick a tokenizer whose vocab already covers your domain. I always profile token counts on real data before estimating cost."</p></div>
+  </div>
+
+  <div class="concept" id="embeddings">
+    <h3>Embeddings</h3>
+    <p class="q">Q · What are embeddings, and how do they convert text to vectors?</p>
+    <p>An <strong>embedding</strong> maps a discrete token ID to a dense vector of floats (e.g. 4096 dimensions) that lives in a learned semantic space. The defining property: <strong>semantically similar things land near each other</strong>. Directions in that space carry meaning — the famous <em>king − man + woman ≈ queen</em>. Embeddings are learned during training, not hand-designed.</p>
+    <p>Two distinct uses to keep straight: (1) <strong>token embeddings</strong> inside the model — the first layer that turns IDs into vectors; (2) <strong>sentence/document embeddings</strong> from dedicated embedding models (e.g. OpenAI <code>text-embedding-3</code>, or open models like BGE / E5 / Nomic) that turn a whole passage into one vector for <strong>semantic search and RAG retrieval</strong>. When your interviewer talks about "embeddings" in a RAG context, they mean the second.</p>
+    <div class="call ex"><span class="lbl">Concrete example</span><p>Query <em>"how do I reset my password"</em> and a doc titled <em>"account recovery steps"</em> share almost no keywords, but their embeddings sit close together (small cosine distance), so vector search retrieves the doc. That's the entire premise of RAG retrieval — and directly connects to your Module 3 flagship.</p></div>
+  </div>
+
+  <div class="concept" id="posenc">
+    <h3>Positional encoding &amp; RoPE</h3>
+    <p class="q">Q · What is positional encoding, why is it needed, and how does RoPE work?</p>
+    <p>Self-attention is <strong>permutation-invariant</strong>: on its own it treats input as a <em>bag</em> of tokens with no order, so <em>"dog bites man"</em> and <em>"man bites dog"</em> would look identical. Positional encoding injects order information so the model knows <em>where</em> each token sits.</p>
+    <p>The original Transformer added fixed <strong>sinusoidal</strong> vectors to embeddings. Later models learned absolute position embeddings. Both share a weakness: they bolt <em>absolute</em> position onto the input and generalize poorly beyond the trained context length.</p>
+    <p><strong>RoPE (Rotary Position Embedding)</strong> is now standard. Instead of <em>adding</em> a position vector, it <strong>rotates</strong> the query and key vectors by an angle proportional to their position, applied inside attention. The elegant consequence: the attention score between two tokens ends up depending only on their <em>relative</em> distance, not absolute index.</p>
+
+    <figure>
+      <div class="figtop"><span class="fignum">FIG. 05</span><span class="figttl">rope_rotation.svg</span></div>
+      <div class="figbody">
+        <svg viewBox="0 0 620 200" role="img" aria-label="RoPE rotates vectors by position">
+          <!-- three positions -->
+          <g transform="translate(90,100)">
+            <circle r="52" fill="none" stroke="var(--line)"/>
+            <line class="s-flow" x1="0" y1="0" x2="48" y2="-16"/>
+            <text class="s-ts" x="0" y="72" text-anchor="middle">pos 1</text>
+            <text class="s-ts" x="0" y="-64" text-anchor="middle" fill="var(--accent)">θ·1</text>
+          </g>
+          <g transform="translate(300,100)">
+            <circle r="52" fill="none" stroke="var(--line)"/>
+            <line class="s-flow" x1="0" y1="0" x2="30" y2="-42"/>
+            <text class="s-ts" x="0" y="72" text-anchor="middle">pos 2</text>
+            <text class="s-ts" x="0" y="-64" text-anchor="middle" fill="var(--accent)">θ·2</text>
+          </g>
+          <g transform="translate(510,100)">
+            <circle r="52" fill="none" stroke="var(--line)"/>
+            <line class="s-flow" x1="0" y1="0" x2="-8" y2="-51"/>
+            <text class="s-ts" x="0" y="72" text-anchor="middle">pos 3</text>
+            <text class="s-ts" x="0" y="-64" text-anchor="middle" fill="var(--accent)">θ·3</text>
+          </g>
+          <text class="s-ts" x="310" y="185" text-anchor="middle">same token vector, rotated a bit more at each position → relative distance is preserved</text>
+        </svg>
+      </div>
+      <figcaption>RoPE spins each token's vector by a position-dependent angle. Because rotations compose, tokens 5 apart always have the same relative geometry — which is why RoPE extrapolates to long contexts.</figcaption>
+    </figure>
+
+    <div class="call latest"><span class="lbl">Why interviewers ask</span><p>RoPE (+ tricks like NTK/YaRN scaling on top of it) is <em>how models reach 128k–1M token context windows</em>. If you're asked "how do models handle long context," the answer starts with RoPE. It has "essentially replaced absolute embeddings in every model released after 2022."</p></div>
+  </div>
+
+  <!-- ================= SECTION D ================= -->
+  <div class="sec-head"><span class="sec-num">D</span><h2>Attention — the core mechanism</h2></div>
+  <p class="sec-intro">This is the most-tested topic in the entire field. If you can explain Q/K/V cleanly on a whiteboard and then reason about the KV-cache and GQA trade-offs, you've cleared the technical bar at most companies.</p>
+
+  <div class="concept" id="qkv">
+    <h3>Q, K, V and self-attention</h3>
+    <p class="q">Q · Explain Query, Key, Value. What is self-attention and how does it work?</p>
+    <p>Self-attention lets each token pull in relevant information from other tokens. The mechanism uses three vectors derived from each token by learned projection matrices:</p>
+    <ul class="tight">
+      <li><strong>Query (Q)</strong> — what this token is <em>looking for</em>.</li>
+      <li><strong>Key (K)</strong> — what each token <em>offers / advertises</em>.</li>
+      <li><strong>Value (V)</strong> — the actual <em>content</em> passed along if attended to.</li>
+    </ul>
+    <p>The best analogy is <strong>search</strong>: your Query is a search box; every token's Key is a page title in the index; you match your Query against all Keys to get relevance scores; those scores become weights over the Values, and you take a weighted sum. The formula:</p>
+    <p style="text-align:center;font-family:var(--mono);background:#F0F1F5;padding:14px;border-radius:8px;font-size:15px">
+      Attention(Q,K,V) = softmax( <span style="color:var(--accent-ink)">Q·Kᵀ / √dₖ</span> ) · V
+    </p>
+
+    <figure>
+      <div class="figtop"><span class="fignum">FIG. 06</span><span class="figttl">self_attention_flow.svg</span></div>
+      <div class="figbody">
+        <svg viewBox="0 0 660 250" role="img" aria-label="Self-attention Q K V flow">
+          <defs><marker id="ar3" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#4A4F5C"/></marker></defs>
+          <!-- token -->
+          <rect class="s-box" x="20" y="105" width="92" height="40" rx="7"/>
+          <text class="s-t" x="66" y="130" text-anchor="middle" font-weight="600">token "it"</text>
+          <!-- Q K V projections -->
+          <rect class="s-accent" x="160" y="30" width="70" height="34" rx="6"/><text class="s-tm" x="195" y="52" text-anchor="middle" fill="var(--accent-ink)">Q</text>
+          <rect class="s-teal" x="160" y="108" width="70" height="34" rx="6"/><text class="s-tm" x="195" y="130" text-anchor="middle" fill="var(--teal)">K (all)</text>
+          <rect class="s-amber" x="160" y="186" width="70" height="34" rx="6"/><text class="s-tm" x="195" y="208" text-anchor="middle" fill="var(--amber)">V (all)</text>
+          <line class="s-line" x1="112" y1="118" x2="158" y2="50" marker-end="url(#ar3)"/>
+          <line class="s-line" x1="112" y1="125" x2="158" y2="125" marker-end="url(#ar3)"/>
+          <line class="s-line" x1="112" y1="132" x2="158" y2="200" marker-end="url(#ar3)"/>
+          <!-- score -->
+          <rect class="s-box" x="290" y="66" width="120" height="40" rx="7"/>
+          <text class="s-ts" x="350" y="82" text-anchor="middle">Q·Kᵀ / √dₖ</text>
+          <text class="s-ts" x="350" y="98" text-anchor="middle">raw scores</text>
+          <line class="s-line" x1="230" y1="47" x2="288" y2="80" marker-end="url(#ar3)"/>
+          <line class="s-line" x1="230" y1="125" x2="288" y2="95" marker-end="url(#ar3)"/>
+          <!-- softmax -->
+          <rect class="s-accent" x="290" y="130" width="120" height="36" rx="7"/>
+          <text class="s-t" x="350" y="153" text-anchor="middle" font-weight="600">softmax</text>
+          <line class="s-line" x1="350" y1="106" x2="350" y2="128" marker-end="url(#ar3)"/>
+          <text class="s-ts" x="350" y="185" text-anchor="middle">weights: cat .8 · sat .1 …</text>
+          <!-- weighted sum -->
+          <rect class="s-box" x="470" y="108" width="120" height="40" rx="7"/>
+          <text class="s-ts" x="530" y="126" text-anchor="middle">Σ weight×V</text>
+          <text class="s-ts" x="530" y="140" text-anchor="middle">new "it" vector</text>
+          <line class="s-line" x1="410" y1="148" x2="468" y2="130" marker-end="url(#ar3)"/>
+          <line class="s-line" x1="230" y1="203" x2="468" y2="140" marker-end="url(#ar3)"/>
+          <text class="s-ts" x="530" y="175" text-anchor="middle" fill="var(--accent)">now "it" carries "cat"</text>
+        </svg>
+      </div>
+      <figcaption>"it" queries every token, finds "cat" most relevant, and absorbs mostly cat's Value — so the vector for "it" now encodes what it refers to. Do this for every token in parallel = self-attention.</figcaption>
+    </figure>
+
+    <p><strong>Cross-attention</strong> is the same mechanism but Q comes from one sequence and K,V from another — used in encoder-decoder models so the decoder can attend to the encoded input (e.g. Whisper's text decoder attending to audio features). In decoder-only LLMs it's <em>self</em>-attention throughout.</p>
+    <div class="call rec"><span class="lbl">Whiteboard-ready line</span><p>"Query = what I'm looking for, Key = what each token advertises, Value = what it actually contributes. Score queries against keys, softmax to weights, weighted-sum the values. It's differentiable, learned soft dictionary lookup."</p></div>
+  </div>
+
+  <div class="concept" id="scaling">
+    <h3>Why scale by √dₖ</h3>
+    <p class="q">Q · Why do we divide the dot-product attention by √dₖ?</p>
+    <p>As the key/query dimension <code>dₖ</code> grows, the dot products <code>Q·Kᵀ</code> grow in magnitude (variance scales with <code>dₖ</code>). Feed large-magnitude values into softmax and it <strong>saturates</strong> — nearly all weight collapses onto one token, and the gradients through softmax vanish, so the model can't learn. Dividing by <code>√dₖ</code> normalizes the variance back to ~1, keeping softmax in a sensitive, trainable range.</p>
+    <div class="call ex"><span class="lbl">Intuition</span><p>softmax([1,2,3]) is a soft, spread distribution. softmax([100,200,300]) is essentially [0,0,1] — a hard argmax with dead gradients. √dₖ keeps scores in the first regime. It's a numerical-stability fix, not a modeling choice.</p></div>
+  </div>
+
+  <div class="concept" id="masking">
+    <h3>Causal masking</h3>
+    <p class="q">Q · What is causal masking?</p>
+    <p>In a decoder LLM, token <em>i</em> must only attend to tokens <em>≤ i</em> — it can't peek at the future it's supposed to predict, or training would be trivial and generation impossible. <strong>Causal masking</strong> enforces this by setting the attention scores for all future positions to <code>−∞</code> <em>before</em> softmax, so their weights become exactly 0.</p>
+    <figure>
+      <div class="figtop"><span class="fignum">FIG. 07</span><span class="figttl">causal_mask.svg</span></div>
+      <div class="figbody">
+        <svg viewBox="0 0 380 210" role="img" aria-label="Causal attention mask">
+          <text class="s-ts" x="30" y="18">rows = query token · cols = key token</text>
+          <g font-family="var(--mono)" font-size="11">
+            <!-- grid 4x4 -->
+            <!-- row labels -->
+            <text class="s-ts" x="14" y="55">The</text><text class="s-ts" x="14" y="90">cat</text><text class="s-ts" x="14" y="125">sat</text><text class="s-ts" x="20" y="160">on</text>
+            <!-- cells: allowed = teal, masked = light -->
+            <!-- r1 -->
+            <rect x="50" y="42" width="30" height="24" class="s-teal"/><rect x="82" y="42" width="30" height="24" fill="#F0F1F5" stroke="var(--line)"/><rect x="114" y="42" width="30" height="24" fill="#F0F1F5" stroke="var(--line)"/><rect x="146" y="42" width="30" height="24" fill="#F0F1F5" stroke="var(--line)"/>
+            <!-- r2 -->
+            <rect x="50" y="76" width="30" height="24" class="s-teal"/><rect x="82" y="76" width="30" height="24" class="s-teal"/><rect x="114" y="76" width="30" height="24" fill="#F0F1F5" stroke="var(--line)"/><rect x="146" y="76" width="30" height="24" fill="#F0F1F5" stroke="var(--line)"/>
+            <!-- r3 -->
+            <rect x="50" y="110" width="30" height="24" class="s-teal"/><rect x="82" y="110" width="30" height="24" class="s-teal"/><rect x="114" y="110" width="30" height="24" class="s-teal"/><rect x="146" y="110" width="30" height="24" fill="#F0F1F5" stroke="var(--line)"/>
+            <!-- r4 -->
+            <rect x="50" y="144" width="30" height="24" class="s-teal"/><rect x="82" y="144" width="30" height="24" class="s-teal"/><rect x="114" y="144" width="30" height="24" class="s-teal"/><rect x="146" y="144" width="30" height="24" class="s-teal"/>
+          </g>
+          <rect x="230" y="60" width="18" height="14" class="s-teal"/><text class="s-ts" x="255" y="72">attend (score kept)</text>
+          <rect x="230" y="90" width="18" height="14" fill="#F0F1F5" stroke="var(--line)"/><text class="s-ts" x="255" y="102">masked (−∞ → 0)</text>
+          <text class="s-ts" x="230" y="135">lower-triangular =</text>
+          <text class="s-ts" x="230" y="150">"can't see the future"</text>
+        </svg>
+      </div>
+      <figcaption>The mask is lower-triangular. This is the single mechanical difference between GPT (causal) and BERT (full/bidirectional) attention.</figcaption>
+    </figure>
+  </div>
+
+  <div class="concept" id="mha">
+    <h3>Multi-head attention → GQA → MLA</h3>
+    <p class="q">Q · What is multi-head attention, and how does GQA differ from MHA? (+ MLA)</p>
+    <p><strong>Multi-head attention (MHA)</strong> runs several attention operations in parallel, each with its own Q/K/V projections ("heads"). Different heads specialize — one tracks syntax, another coreference ("it" → "cat"), another long-range topic. Their outputs are concatenated and projected. More heads = more relationship types captured at once.</p>
+    <p>The problem shows up at <em>inference</em>: every head needs its own Keys and Values cached for every past token (the KV cache). With many heads and long context, that cache dominates memory bandwidth and caps throughput. The fix is to <strong>share K/V across heads</strong>:</p>
+    <figure>
+      <div class="figtop"><span class="fignum">FIG. 08</span><span class="figttl">mha_gqa_mqa.svg</span></div>
+      <div class="figbody">
+        <svg viewBox="0 0 660 190" role="img" aria-label="MHA vs GQA vs MQA">
+          <!-- MHA -->
+          <text class="s-t" x="100" y="24" text-anchor="middle" font-weight="600">MHA</text>
+          <text class="s-ts" x="100" y="40" text-anchor="middle">1 KV per head</text>
+          <g>
+            <rect class="s-accent" x="40" y="55" width="26" height="26" rx="4"/><rect class="s-accent" x="72" y="55" width="26" height="26" rx="4"/><rect class="s-accent" x="104" y="55" width="26" height="26" rx="4"/><rect class="s-accent" x="136" y="55" width="26" height="26" rx="4"/>
+            <rect class="s-teal" x="40" y="120" width="26" height="26" rx="4"/><rect class="s-teal" x="72" y="120" width="26" height="26" rx="4"/><rect class="s-teal" x="104" y="120" width="26" height="26" rx="4"/><rect class="s-teal" x="136" y="120" width="26" height="26" rx="4"/>
+            <line class="s-line" x1="53" y1="81" x2="53" y2="120"/><line class="s-line" x1="85" y1="81" x2="85" y2="120"/><line class="s-line" x1="117" y1="81" x2="117" y2="120"/><line class="s-line" x1="149" y1="81" x2="149" y2="120"/>
+          </g>
+          <!-- GQA -->
+          <text class="s-t" x="330" y="24" text-anchor="middle" font-weight="600">GQA ✓ standard</text>
+          <text class="s-ts" x="330" y="40" text-anchor="middle">groups share KV</text>
+          <g>
+            <rect class="s-accent" x="255" y="55" width="26" height="26" rx="4"/><rect class="s-accent" x="287" y="55" width="26" height="26" rx="4"/><rect class="s-accent" x="345" y="55" width="26" height="26" rx="4"/><rect class="s-accent" x="377" y="55" width="26" height="26" rx="4"/>
+            <rect class="s-teal" x="271" y="120" width="26" height="26" rx="4"/><rect class="s-teal" x="361" y="120" width="26" height="26" rx="4"/>
+            <line class="s-line" x1="268" y1="81" x2="284" y2="120"/><line class="s-line" x1="300" y1="81" x2="284" y2="120"/>
+            <line class="s-line" x1="358" y1="81" x2="374" y2="120"/><line class="s-line" x1="390" y1="81" x2="374" y2="120"/>
+          </g>
+          <!-- MQA -->
+          <text class="s-t" x="560" y="24" text-anchor="middle" font-weight="600">MQA</text>
+          <text class="s-ts" x="560" y="40" text-anchor="middle">all share 1 KV</text>
+          <g>
+            <rect class="s-accent" x="500" y="55" width="26" height="26" rx="4"/><rect class="s-accent" x="532" y="55" width="26" height="26" rx="4"/><rect class="s-accent" x="564" y="55" width="26" height="26" rx="4"/><rect class="s-accent" x="596" y="55" width="26" height="26" rx="4"/>
+            <rect class="s-teal" x="548" y="120" width="26" height="26" rx="4"/>
+            <line class="s-line" x1="513" y1="81" x2="561" y2="120"/><line class="s-line" x1="545" y1="81" x2="561" y2="120"/><line class="s-line" x1="577" y1="81" x2="561" y2="120"/><line class="s-line" x1="609" y1="81" x2="561" y2="120"/>
+          </g>
+          <text class="s-ts" x="330" y="178" text-anchor="middle">top row = query heads (many) · bottom = key/value heads (fewer). Fewer KV heads = smaller cache = faster inference</text>
+        </svg>
+      </div>
+      <figcaption>GQA is the sweet spot: keep all query heads (quality) but share K/V within groups (cheap cache). MQA is the extreme (one shared KV) — fastest but slightly worse quality.</figcaption>
+    </figure>
+    <div class="call latest"><span class="lbl">The current answer</span><p><strong>GQA is the default</strong> in Llama, Qwen, Gemma, Mistral, and gpt-oss. <strong>DeepSeek</strong> instead uses <strong>MLA (Multi-head Latent Attention)</strong>, which compresses K/V into a small shared <em>latent</em> vector — even less cache than GQA, and the DeepSeek-V2 paper showed <em>better</em> quality than GQA. Naming this trade-off (MHA quality ↔ MQA speed ↔ GQA balance ↔ MLA compression) is a strong signal.</p></div>
+  </div>
+
+  <div class="concept" id="flash">
+    <h3>Flash Attention</h3>
+    <p class="q">Q · What is Flash Attention?</p>
+    <p><strong>Flash Attention</strong> is an exact (not approximate) reformulation of the attention computation that makes it dramatically faster and more memory-efficient on GPUs. Standard attention materializes the full <code>n×n</code> score matrix in slow high-bandwidth memory (HBM); for long sequences that matrix is enormous and the constant shuttling between HBM and fast on-chip SRAM is the real bottleneck.</p>
+    <p>Flash Attention is <strong>IO-aware</strong>: it tiles the computation into blocks that fit in SRAM and uses an online-softmax trick to never write the full matrix to HBM. Same mathematical result, but memory goes from <code>O(n²)</code> to <code>O(n)</code> and it runs several times faster. It's now baked into every serious training and inference stack.</p>
+    <div class="call rec"><span class="lbl">Say this in the interview</span><p>"Flash Attention doesn't change the math — it changes the memory access pattern. It's the canonical example that on modern GPUs you're usually memory-bandwidth-bound, not compute-bound. Same principle drives KV-cache and MoE optimizations."</p></div>
+  </div>
+
+  <div class="concept" id="kvcache">
+    <h3>KV cache</h3>
+    <p class="q">Q · What is the KV cache, and how does it speed up inference?</p>
+    <p>During autoregressive decoding, generating each new token requires attention over <em>all</em> previous tokens' Keys and Values. Without caching you'd recompute K and V for the entire sequence at every single step — quadratic wasted work. The <strong>KV cache</strong> stores the K and V vectors for every past token so each new step only computes K/V for the <em>one</em> new token and reuses the rest.</p>
+    <figure>
+      <div class="figtop"><span class="fignum">FIG. 09</span><span class="figttl">kv_cache_growth.svg</span></div>
+      <div class="figbody">
+        <svg viewBox="0 0 620 170" role="img" aria-label="KV cache grows each step">
+          <defs><marker id="ar4" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#3B3AE8"/></marker></defs>
+          <!-- step 1 -->
+          <text class="s-ts" x="70" y="30" text-anchor="middle">step 1</text>
+          <rect class="s-teal" x="40" y="45" width="26" height="26" rx="3"/><rect class="s-teal" x="68" y="45" width="26" height="26" rx="3"/>
+          <rect class="s-accent" x="96" y="45" width="26" height="26" rx="3"/>
+          <text class="s-ts" x="80" y="95" text-anchor="middle">cached + new</text>
+          <line class="s-flow" x1="130" y1="58" x2="175" y2="58" marker-end="url(#ar4)"/>
+          <!-- step 2 -->
+          <text class="s-ts" x="245" y="30" text-anchor="middle">step 2</text>
+          <rect class="s-teal" x="185" y="45" width="26" height="26" rx="3"/><rect class="s-teal" x="213" y="45" width="26" height="26" rx="3"/><rect class="s-teal" x="241" y="45" width="26" height="26" rx="3"/>
+          <rect class="s-accent" x="269" y="45" width="26" height="26" rx="3"/>
+          <text class="s-ts" x="240" y="95" text-anchor="middle">reuse 3, compute 1</text>
+          <line class="s-flow" x1="303" y1="58" x2="348" y2="58" marker-end="url(#ar4)"/>
+          <!-- step 3 -->
+          <text class="s-ts" x="440" y="30" text-anchor="middle">step 3</text>
+          <rect class="s-teal" x="358" y="45" width="26" height="26" rx="3"/><rect class="s-teal" x="386" y="45" width="26" height="26" rx="3"/><rect class="s-teal" x="414" y="45" width="26" height="26" rx="3"/><rect class="s-teal" x="442" y="45" width="26" height="26" rx="3"/>
+          <rect class="s-accent" x="470" y="45" width="26" height="26" rx="3"/>
+          <text class="s-ts" x="430" y="95" text-anchor="middle">cache keeps growing →</text>
+          <rect class="s-teal" x="520" y="45" width="18" height="18"/><text class="s-ts" x="546" y="59">cached KV</text>
+          <rect class="s-accent" x="520" y="70" width="18" height="18"/><text class="s-ts" x="546" y="84">new token KV</text>
+          <text class="s-ts" x="310" y="140" text-anchor="middle" fill="var(--rose)">Cost: cache size = layers × KV-heads × head-dim × seq-len × batch → the #1 memory sink in serving</text>
+        </svg>
+      </div>
+      <figcaption>The KV cache trades memory for compute. It's why GQA/MLA exist (shrink the cache), why long context is expensive, and why PagedAttention/vLLM manage it like OS memory pages.</figcaption>
+    </figure>
+    <div class="call rec"><span class="lbl">Connect the dots</span><p>The KV cache is the thread linking half this section: <strong>GQA/MLA</strong> shrink it, <strong>PagedAttention (vLLM)</strong> allocates it without fragmentation, and <strong>quantizing the cache</strong> (KV-cache quantization) is a common long-context optimization. Interviewers love when you tie these together instead of reciting them separately.</p></div>
+  </div>
+
+  <!-- ================= SECTION E ================= -->
+  <div class="sec-head"><span class="sec-num">E</span><h2>Normalization</h2></div>
+  <p class="sec-intro">Quick but real: interviewers ask this to check whether you actually read the Llama/Gemma papers or just skimmed a blog.</p>
+
+  <div class="concept" id="norm">
+    <h3>LayerNorm vs RMSNorm</h3>
+    <p class="q">Q · Explain Layer Normalization and RMSNorm. Why did models switch?</p>
+    <p>Normalization keeps activations in a stable range as they flow through a deep stack, so training doesn't diverge. <strong>LayerNorm</strong> normalizes each token's vector by subtracting its <em>mean</em> and dividing by its <em>standard deviation</em>, then applies learned scale and shift. It's the original Transformer choice.</p>
+    <p><strong>RMSNorm</strong> simplifies this: it drops the mean-centering entirely and normalizes only by the root-mean-square of the vector. Fewer operations, no mean/shift to compute — and empirically it matches LayerNorm's quality while being faster. Because it runs at every layer, that small saving compounds.</p>
+    <table>
+      <tr><th></th><th>LayerNorm</th><th>RMSNorm</th></tr>
+      <tr><td>Centers mean?</td><td>Yes (subtract μ)</td><td>No</td></tr>
+      <tr><td>Learned params</td><td>scale + shift</td><td>scale only</td></tr>
+      <tr><td>Speed</td><td>Baseline</td><td>Faster (~fewer ops)</td></tr>
+      <tr><td>Used by</td><td>GPT-2, original Transformer</td><td>Llama, Gemma, Qwen, Mistral</td></tr>
+    </table>
+    <p>Also worth one sentence: <strong>Batch</strong> Normalization (common in vision CNNs) normalizes across the <em>batch</em> dimension, which is unstable for variable-length text and small/streaming batches — that's why Transformers use Layer/RMSNorm, which normalize within a single token's features and don't depend on batch size.</p>
+    <div class="call rec"><span class="lbl">Say this in the interview</span><p>"Modern LLMs use pre-RMSNorm. RMSNorm ditches mean-centering — turns out the re-scaling, not the re-centering, was doing the real work — so you get the same stability for less compute at every layer."</p></div>
+  </div>
+
+  <!-- ================= SECTION F ================= -->
+  <div class="sec-head"><span class="sec-num">F</span><h2>Generation &amp; Decoding</h2></div>
+  <p class="sec-intro">The part users actually experience. These knobs — temperature, top-p, context — are the ones a product engineer tunes daily, so expect practical, "what would you set and why" questions.</p>
+
+  <div class="concept" id="logits">
+    <h3>Logits</h3>
+    <p class="q">Q · What are logits, and how are they used in text generation?</p>
+    <p><strong>Logits</strong> are the raw, unnormalized scores the final layer outputs — one per vocabulary token (so a vector of length ~100k–200k). They aren't probabilities yet; they can be any real number. <strong>Softmax</strong> converts the full logit vector into a probability distribution that sums to 1. Decoding then picks a token from that distribution.</p>
+    <p>Everything else in generation is manipulation of logits <em>before</em> softmax: temperature divides them, top-k/top-p prune them, repetition penalties subtract from already-used tokens, and structured-output constraints mask illegal tokens to <code>−∞</code>.</p>
+    <div class="call ex"><span class="lbl">Concrete example</span><p>Logits <code>[dog: 3.1, cat: 3.0, banana: -2.0]</code> → softmax → roughly <code>[0.49, 0.44, 0.002…]</code>. "dog" and "cat" are near-ties; "banana" is essentially impossible. The decoding strategy decides how you gamble between "dog" and "cat".</p></div>
+  </div>
+
+  <div class="concept" id="context">
+    <h3>Context window (and why it's limited)</h3>
+    <p class="q">Q · What is the context window, why does it matter, and why is it limited?</p>
+    <p>The <strong>context window</strong> is the maximum number of tokens the model can attend to at once — prompt + generated output combined. It's the model's working memory. Everything the model "knows" for this request must fit here: system prompt, chat history, retrieved RAG chunks, tool outputs, and the answer.</p>
+    <p><strong>Why it's limited:</strong> vanilla self-attention is <code>O(n²)</code> in both compute and memory — double the context, quadruple the attention cost. On top of that, the KV cache grows linearly with context and eats GPU memory. And even when a model <em>technically</em> accepts 1M tokens, quality degrades in the middle (next point). RoPE + Flash Attention + KV-cache tricks are what pushed windows from 2k (GPT-3) to 128k–1M today.</p>
+    <div class="call pit"><span class="lbl">"Lost in the middle"</span><p>A critical, frequently-tested phenomenon: models reliably use information at the <em>start</em> and <em>end</em> of a long context but often <strong>miss facts buried in the middle</strong>. So a huge context window is not a substitute for good retrieval — in RAG, put the most important chunks first or last, and don't dump 100 documents assuming the model reads them evenly. This directly informs your RAG design in Module 3.</p></div>
+  </div>
+
+  <div class="concept" id="temp">
+    <h3>Temperature</h3>
+    <p class="q">Q · What is temperature, and how does it affect output?</p>
+    <p><strong>Temperature</strong> (T) scales the logits before softmax (<code>logits / T</code>), controlling how "peaked" or "flat" the probability distribution is — i.e. the randomness/creativity of the output.</p>
+    <figure>
+      <div class="figtop"><span class="fignum">FIG. 10</span><span class="figttl">temperature.svg</span></div>
+      <div class="figbody">
+        <svg viewBox="0 0 620 180" role="img" aria-label="Temperature effect on distribution">
+          <!-- low temp -->
+          <text class="s-t" x="105" y="20" text-anchor="middle" font-weight="600">T = 0.2 (sharp)</text>
+          <line class="s-line" x1="30" y1="140" x2="190" y2="140"/>
+          <rect class="s-accent" x="40" y="55" width="26" height="85"/>
+          <rect class="s-accent" x="80" y="120" width="26" height="20"/>
+          <rect class="s-accent" x="120" y="130" width="26" height="10"/>
+          <rect class="s-accent" x="160" y="135" width="26" height="5"/>
+          <text class="s-ts" x="105" y="162" text-anchor="middle">deterministic, focused</text>
+          <!-- high temp -->
+          <text class="s-t" x="420" y="20" text-anchor="middle" font-weight="600">T = 1.2 (flat)</text>
+          <line class="s-line" x1="330" y1="140" x2="510" y2="140"/>
+          <rect class="s-amber" x="345" y="90" width="26" height="50"/>
+          <rect class="s-amber" x="388" y="100" width="26" height="40"/>
+          <rect class="s-amber" x="431" y="95" width="26" height="45"/>
+          <rect class="s-amber" x="474" y="108" width="26" height="32"/>
+          <text class="s-ts" x="420" y="162" text-anchor="middle">diverse, creative, riskier</text>
+        </svg>
+      </div>
+      <figcaption>Low T sharpens toward the top token (near-greedy); high T flattens the distribution so unlikely tokens get a chance. T=0 = fully deterministic argmax.</figcaption>
+    </figure>
+    <table>
+      <tr><th>Setting</th><th>Behavior</th><th>Use for</th></tr>
+      <tr><td>T ≈ 0</td><td>Deterministic, always top token</td><td>Extraction, classification, code, math, agents/tools</td></tr>
+      <tr><td>T ≈ 0.7</td><td>Balanced</td><td>Chat, general assistants</td></tr>
+      <tr><td>T ≈ 1.0–1.3</td><td>Creative, varied</td><td>Brainstorming, fiction, marketing copy</td></tr>
+    </table>
+    <div class="call rec"><span class="lbl">Say this in the interview</span><p>"For anything that must be correct or parseable — JSON output, function calls, retrieval answers — I run temperature at or near 0. Reserve higher temperature for tasks where diversity is the goal. Randomness is a feature you opt into, not a default."</p></div>
+  </div>
+
+  <div class="concept" id="sampling">
+    <h3>Top-k and Top-p (nucleus) sampling</h3>
+    <p class="q">Q · Explain top-k and top-p sampling. How do they differ?</p>
+    <p>Temperature reshapes the distribution; <strong>top-k</strong> and <strong>top-p</strong> decide which tokens are even eligible to be sampled, cutting off the long tail of garbage tokens.</p>
+    <ul class="tight">
+      <li><strong>Top-k</strong>: keep only the <em>k</em> highest-probability tokens, renormalize, sample. Simple, but <em>k</em> is fixed regardless of how confident the model is.</li>
+      <li><strong>Top-p (nucleus)</strong>: keep the smallest set of top tokens whose cumulative probability ≥ <em>p</em> (e.g. 0.9), then sample. The candidate set <em>adapts</em> — small when the model is confident, large when it's uncertain.</li>
+    </ul>
+    <figure>
+      <div class="figtop"><span class="fignum">FIG. 11</span><span class="figttl">topk_vs_topp.svg</span></div>
+      <div class="figbody">
+        <svg viewBox="0 0 620 170" role="img" aria-label="Top-k vs top-p">
+          <!-- top-k -->
+          <text class="s-t" x="150" y="20" text-anchor="middle" font-weight="600">Top-k (k=3)</text>
+          <g>
+            <rect class="s-teal" x="40" y="50" width="24" height="80"/><rect class="s-teal" x="70" y="75" width="24" height="55"/><rect class="s-teal" x="100" y="95" width="24" height="35"/>
+            <rect x="130" y="110" width="24" height="20" fill="#F0F1F5" stroke="var(--line)"/><rect x="160" y="118" width="24" height="12" fill="#F0F1F5" stroke="var(--line)"/><rect x="190" y="123" width="24" height="7" fill="#F0F1F5" stroke="var(--line)"/>
+            <line class="s-line" x1="40" y1="130" x2="220" y2="130"/>
+            <text class="s-ts" x="130" y="152" text-anchor="middle">always keeps exactly 3</text>
+          </g>
+          <!-- top-p -->
+          <text class="s-t" x="450" y="20" text-anchor="middle" font-weight="600">Top-p (p=0.9)</text>
+          <g>
+            <rect class="s-accent" x="350" y="50" width="24" height="80"/><rect class="s-accent" x="380" y="75" width="24" height="55"/>
+            <rect x="410" y="95" width="24" height="35" fill="#F0F1F5" stroke="var(--line)"/><rect x="440" y="110" width="24" height="20" fill="#F0F1F5" stroke="var(--line)"/><rect x="470" y="118" width="24" height="12" fill="#F0F1F5" stroke="var(--line)"/><rect x="500" y="123" width="24" height="7" fill="#F0F1F5" stroke="var(--line)"/>
+            <line class="s-line" x1="350" y1="130" x2="530" y2="130"/>
+            <text class="s-ts" x="440" y="152" text-anchor="middle">keeps just enough to reach 90%</text>
+          </g>
+        </svg>
+      </div>
+      <figcaption>Top-p adapts its cutoff to the model's confidence, which is why it's the more common default. In practice you combine temperature + top-p.</figcaption>
+    </figure>
+    <div class="call rec"><span class="lbl">Say this in the interview</span><p>"Top-p is usually preferred because the candidate pool adapts to model confidence, whereas top-k is a blunt fixed cutoff. I tune them together with temperature — and for deterministic tasks I bypass sampling entirely with greedy decoding."</p></div>
+  </div>
+
+  <div class="concept" id="latency">
+    <h3>First-token latency: prefill vs decode</h3>
+    <p class="q">Q · Why is the first token slower than the rest?</p>
+    <p>Generating the first token requires the <strong>prefill</strong> pass: the model processes your <em>entire</em> prompt through every layer to build the KV cache. A long prompt (big RAG context, long history) means a lot of work before <em>any</em> output appears — this is your <strong>Time To First Token (TTFT)</strong>. After that, each subsequent token is a <strong>decode</strong> step that only processes one new token against the cache, so they stream out quickly (Time Per Output Token / TPOT).</p>
+    <table>
+      <tr><th></th><th>Prefill (first token)</th><th>Decode (rest)</th></tr>
+      <tr><td>Processes</td><td>Whole prompt in parallel</td><td>One new token</td></tr>
+      <tr><td>Bottleneck</td><td>Compute-bound</td><td>Memory-bandwidth-bound</td></tr>
+      <tr><td>Metric</td><td>TTFT</td><td>TPOT / tokens-per-sec</td></tr>
+      <tr><td>Lever</td><td>Prompt caching, shorter context</td><td>GQA/MLA, quantization, batching</td></tr>
+    </table>
+    <div class="call latest"><span class="lbl">2026 lever: prompt caching</span><p>If a long system prompt or document repeats across requests, <strong>prompt caching</strong> stores its prefill KV state so you skip re-processing it — big TTFT and cost wins. Naming this shows you think about production economics, not just latency in the abstract.</p></div>
+  </div>
+
+  <div class="concept" id="loss">
+    <h3>Cross-entropy loss</h3>
+    <p class="q">Q · What is cross-entropy loss?</p>
+    <p><strong>Cross-entropy</strong> is the training objective for next-token prediction. At each position the model outputs a probability distribution over the vocabulary; the "correct answer" is the actual next token (a one-hot target). Cross-entropy measures how much probability mass the model put on the <em>true</em> token: <code>loss = −log(P(correct token))</code>. Put high probability on the right token → tiny loss. Confidently predict the wrong token → huge loss. Training minimizes the average across trillions of tokens.</p>
+    <div class="call ex"><span class="lbl">Connect it</span><p><strong>Perplexity</strong>, the classic LM quality metric, is just <code>exp(cross-entropy)</code> — the model's "average branching factor," or how many tokens it's effectively choosing between. Lower perplexity = more confident, better-fit model. If asked "how do you measure a base LM," start here (and note it's insufficient for instruct models — see the Evaluation module).</p></div>
+  </div>
+
+  <!-- ================= SECTION G ================= -->
+  <div class="sec-head"><span class="sec-num">G</span><h2>Scaling &amp; Efficiency Architectures</h2></div>
+  <p class="sec-intro">How the frontier keeps getting more capable without linearly more expensive. MoE is the single most important idea here in 2026.</p>
+
+  <div class="concept" id="moe">
+    <h3>Mixture of Experts (dense vs sparse)</h3>
+    <p class="q">Q · What is MoE, how does it work, and what's the difference between dense and sparse models?</p>
+    <p>In a <strong>dense</strong> model, every parameter is used for every token — a 70B dense model does 70B params of work per token. In a <strong>sparse Mixture-of-Experts</strong> model, the FFN in each block is replaced by many parallel "expert" FFNs plus a small <strong>router</strong> that sends each token to only the top-1 or top-2 experts. The model has a huge <em>total</em> parameter count (knowledge capacity) but only <em>activates</em> a fraction per token (cheap compute).</p>
+    <figure>
+      <div class="figtop"><span class="fignum">FIG. 12</span><span class="figttl">moe_routing.svg</span></div>
+      <div class="figbody">
+        <svg viewBox="0 0 620 210" role="img" aria-label="MoE routing">
+          <defs><marker id="ar5" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#3B3AE8"/></marker><marker id="ar5g" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#C9CDD6"/></marker></defs>
+          <rect class="s-box" x="30" y="90" width="90" height="34" rx="7"/>
+          <text class="s-ts" x="75" y="112" text-anchor="middle">token</text>
+          <rect class="s-accent" x="160" y="86" width="90" height="42" rx="7"/>
+          <text class="s-t" x="205" y="104" text-anchor="middle" font-weight="600">Router</text>
+          <text class="s-ts" x="205" y="120" text-anchor="middle">picks top-2</text>
+          <line class="s-flow" x1="120" y1="107" x2="158" y2="107" marker-end="url(#ar5)"/>
+          <!-- experts -->
+          <g>
+            <rect class="s-teal" x="330" y="20" width="120" height="30" rx="6"/><text class="s-ts" x="390" y="40" text-anchor="middle" fill="var(--teal)">Expert 1 ✓ active</text>
+            <rect x="330" y="60" width="120" height="30" rx="6" fill="#F0F1F5" stroke="var(--line)"/><text class="s-ts" x="390" y="80" text-anchor="middle">Expert 2 · idle</text>
+            <rect class="s-teal" x="330" y="100" width="120" height="30" rx="6"/><text class="s-ts" x="390" y="120" text-anchor="middle" fill="var(--teal)">Expert 3 ✓ active</text>
+            <rect x="330" y="140" width="120" height="30" rx="6" fill="#F0F1F5" stroke="var(--line)"/><text class="s-ts" x="390" y="160" text-anchor="middle">Expert 4 · idle</text>
+            <rect x="330" y="180" width="120" height="24" rx="6" fill="#F0F1F5" stroke="var(--line)"/><text class="s-ts" x="390" y="197" text-anchor="middle">… Expert N · idle</text>
+          </g>
+          <line class="s-flow" x1="250" y1="100" x2="326" y2="38" marker-end="url(#ar5)"/>
+          <line class="s-flow" x1="250" y1="114" x2="326" y2="112" marker-end="url(#ar5)"/>
+          <line stroke="#C9CDD6" stroke-width="1.5" stroke-dasharray="3 3" x1="250" y1="110" x2="326" y2="74" marker-end="url(#ar5g)"/>
+          <line stroke="#C9CDD6" stroke-width="1.5" stroke-dasharray="3 3" x1="250" y1="116" x2="326" y2="152" marker-end="url(#ar5g)"/>
+          <rect class="s-amber" x="500" y="86" width="90" height="42" rx="7"/>
+          <text class="s-ts" x="545" y="104" text-anchor="middle" fill="var(--amber)">combine</text>
+          <text class="s-ts" x="545" y="119" text-anchor="middle" fill="var(--amber)">→ output</text>
+          <line class="s-flow" x1="450" y1="38" x2="498" y2="98" marker-end="url(#ar5)"/>
+          <line class="s-flow" x1="450" y1="115" x2="498" y2="112" marker-end="url(#ar5)"/>
+        </svg>
+      </div>
+      <figcaption>Only the router-selected experts run for a given token. A different token routes to different experts — so capacity scales with N while cost stays near a small dense model.</figcaption>
+    </figure>
+    <div class="call latest"><span class="lbl">The headline number</span><p><strong>DeepSeek-V3</strong>: 671B total parameters but only ~<strong>37B active</strong> per token — it outperformed the 405B <em>dense</em> Llama 3 while being far cheaper at inference. Mixtral (8×7B, 2 active) popularized the idea. The catch you should name: MoE needs enough VRAM to hold <em>all</em> experts even though only some run, plus load-balancing so the router doesn't overuse a few experts. "MoE decouples knowledge capacity from inference cost" is the one-line answer.</p></div>
+  </div>
+
+  <div class="concept" id="distill">
+    <h3>Model distillation</h3>
+    <p class="q">Q · What is knowledge distillation, and how is it used with LLMs?</p>
+    <p><strong>Distillation</strong> trains a small <strong>student</strong> model to mimic a large <strong>teacher</strong> model. Instead of (or alongside) hard labels, the student learns from the teacher's full <em>soft</em> output distribution — the teacher's "3% chance it's a cat, 1% a dog" carries far richer signal ("dark knowledge") than a one-hot label. The result: a much smaller, cheaper model that retains a surprising amount of the teacher's capability.</p>
+    <div class="call ex"><span class="lbl">Concrete example</span><p>Llama, Gemma, and Qwen ship "distilled" small variants; DeepSeek released R1-distilled small models that inherit reasoning traces from the big R1. You distill to serve a 7B on a single GPU instead of paying for a 70B — the standard move to cut inference cost while holding quality.</p></div>
+    <div class="call pit"><span class="lbl">Nuance recruiters probe</span><p>Distillation transfers <em>patterns</em>, not the teacher's full capacity — students often fail on the hardest reasoning the teacher handled. Mitigations: distill on task-relevant data, add chain-of-thought traces, or keep a fallback to the larger model for hard cases. Also flag the <em>legal</em> angle: distilling from a closed API may violate its terms of service.</p></div>
+  </div>
+
+  <div class="concept" id="slm-lrm">
+    <h3>Small Language Models &amp; Large Reasoning Models</h3>
+    <p class="q">Q · What are SLMs and LRMs?</p>
+    <p><strong>Small Language Models (SLMs)</strong> — roughly 1B–14B params (Phi, Gemma-2B/9B, Qwen-small, Llama-8B). The 2026 thesis: for a <em>specific, well-scoped</em> task, a fine-tuned SLM can match a giant model at a fraction of the cost, run on-device/edge, keep data local, and respond faster. "Right-sizing the model to the task" is a mature-engineer signal — you don't reach for the biggest model by reflex.</p>
+    <p><strong>Large Reasoning Models (LRMs)</strong> — models trained (often via RL) to generate an explicit internal <strong>chain of thought</strong> before answering: OpenAI's o-series, DeepSeek-R1, and reasoning modes in Claude/Gemini. They spend extra <em>inference-time compute</em> ("thinking tokens") to dramatically improve math, coding, and multi-step logic. The trade-off is latency and cost per answer, so you route only hard problems to them.</p>
+    <div class="call rec"><span class="lbl">Say this in the interview</span><p>"I think in terms of a model portfolio, not one model. Cheap SLM for classification and routing, a mid-tier model for chat, and an LRM reserved for genuinely hard reasoning — with a router deciding per request. That's how you hit quality targets without lighting the budget on fire."</p></div>
+  </div>
+
+  <!-- ================= SECTION H ================= -->
+  <div class="sec-head"><span class="sec-num">H</span><h2>Alignment — turning a predictor into an assistant</h2></div>
+  <p class="sec-intro">A base model just predicts text; it isn't helpful or safe by default. Alignment is what makes it follow instructions and refuse harm. (Deep fine-tuning mechanics live in Module 5 — here's the fundamentals-level framing.)</p>
+
+  <div class="concept" id="align">
+    <h3>RLHF, PPO, DPO &amp; GRPO</h3>
+    <p class="q">Q · What is RLHF? Explain PPO, DPO, and GRPO.</p>
+    <p>After pre-training, a model is fluent but not aligned. The pipeline that fixes this: <strong>SFT</strong> (supervised fine-tuning on instruction–response pairs) → <strong>preference alignment</strong> (teach it which responses humans prefer).</p>
+    <p><strong>RLHF (Reinforcement Learning from Human Feedback)</strong> is the classic recipe: (1) collect human rankings of model outputs; (2) train a <strong>reward model</strong> to predict those preferences; (3) use RL to update the LLM to maximize reward. This is how ChatGPT went from "autocomplete" to "assistant."</p>
+
+    <figure>
+      <div class="figtop"><span class="fignum">FIG. 13</span><span class="figttl">alignment_methods.svg</span></div>
+      <div class="figbody">
+        <svg viewBox="0 0 640 200" role="img" aria-label="PPO vs DPO vs GRPO">
+          <!-- PPO -->
+          <rect class="s-box" x="20" y="40" width="180" height="130" rx="10"/>
+          <text class="s-t" x="110" y="62" text-anchor="middle" font-weight="600">PPO (RLHF)</text>
+          <text class="s-ts" x="110" y="86" text-anchor="middle">needs a reward model</text>
+          <text class="s-ts" x="110" y="104" text-anchor="middle">+ RL loop + critic</text>
+          <text class="s-ts" x="110" y="122" text-anchor="middle">most powerful,</text>
+          <text class="s-ts" x="110" y="140" text-anchor="middle">most complex/unstable</text>
+          <!-- DPO -->
+          <rect class="s-teal" x="230" y="40" width="180" height="130" rx="10"/>
+          <text class="s-t" x="320" y="62" text-anchor="middle" font-weight="600">DPO</text>
+          <text class="s-ts" x="320" y="86" text-anchor="middle">no reward model,</text>
+          <text class="s-ts" x="320" y="104" text-anchor="middle">no RL loop</text>
+          <text class="s-ts" x="320" y="122" text-anchor="middle">direct on preference</text>
+          <text class="s-ts" x="320" y="140" text-anchor="middle">pairs — simple &amp; stable</text>
+          <!-- GRPO -->
+          <rect class="s-accent" x="440" y="40" width="180" height="130" rx="10"/>
+          <text class="s-t" x="530" y="62" text-anchor="middle" font-weight="600">GRPO</text>
+          <text class="s-ts" x="530" y="86" text-anchor="middle">RL, but drops the</text>
+          <text class="s-ts" x="530" y="104" text-anchor="middle">critic — scores a</text>
+          <text class="s-ts" x="530" y="122" text-anchor="middle">group of samples</text>
+          <text class="s-ts" x="530" y="140" text-anchor="middle">powers DeepSeek-R1</text>
+        </svg>
+      </div>
+      <figcaption>Left→right is roughly "less machinery." PPO is the powerful original; DPO trades a bit of ceiling for huge simplicity; GRPO keeps RL's power for reasoning while cutting the critic's cost.</figcaption>
+    </figure>
+
+    <ul class="tight">
+      <li><strong>PPO (Proximal Policy Optimization)</strong> — the RL algorithm inside classic RLHF. It updates the model to chase reward while a "clipping" constraint stops it drifting too far from the original model in one step (which would break it). Powerful but complex: you juggle four models (policy, reference, reward, critic) and it's finicky to stabilize.</li>
+      <li><strong>DPO (Direct Preference Optimization)</strong> — a 2023 breakthrough that skips the reward model and RL loop entirely. It reformulates preference learning as a <em>simple classification loss</em> directly on "chosen vs rejected" response pairs. Far simpler, more stable, cheaper — now a default for open-model alignment.</li>
+      <li><strong>GRPO (Group Relative Policy Optimization)</strong> — DeepSeek's method behind R1's reasoning. It keeps RL but removes the separate value/critic model: sample a <em>group</em> of answers per prompt, score them, and use the group's <em>relative</em> ranking as the advantage signal. Cheaper than PPO and especially strong for verifiable-reward tasks (math/code where you can auto-check correctness).</li>
+    </ul>
+    <div class="call latest"><span class="lbl">Why this is hot in 2026</span><p>GRPO + verifiable rewards is <em>the</em> recipe that made open reasoning models (DeepSeek-R1) competitive with closed frontier models — and it's why "RL for reasoning" is the most-discussed training topic right now. Also name <strong>RLAIF</strong> (RL from <em>AI</em> Feedback / Constitutional AI): replace human labelers with an AI judge to scale alignment cheaply.</p></div>
+    <div class="call pit"><span class="lbl">Depth-check terms</span><p>Be ready for <strong>reward hacking</strong> (model games the reward model instead of being genuinely helpful — mitigate with KL penalty, better reward models, human spot-checks) and the <strong>alignment tax</strong> (heavy alignment can dent raw capability — balance with capability evals during alignment).</p></div>
+  </div>
+
+  <!-- ================= SECTION I ================= -->
+  <div class="sec-head"><span class="sec-num">I</span><h2>Frontier &amp; Emerging</h2></div>
+  <p class="sec-intro">The "do you actually keep up?" questions. You don't need deep mastery — you need to explain each in two crisp sentences and know why it matters.</p>
+
+  <div class="concept" id="frontier">
+    <h3>RLMs · Diffusion LMs · Continual Learning · Vision Transformers</h3>
+    <p class="q">Q · Explain Recursive Language Models, Diffusion Language Models, continual learning, and ViT.</p>
+
+    <h4 class="mini">Recursive Language Models (RLMs)</h4>
+    <p>An inference strategy where a model recursively decomposes a hard/long problem and calls itself (or sub-instances) on the pieces, treating its own context as something to programmatically navigate rather than swallow whole. The aim is to beat the context-window ceiling and "lost in the middle" by never forcing everything into one pass — think divide-and-conquer for reasoning over huge inputs.</p>
+
+    <h4 class="mini">Diffusion Language Models (DLMs)</h4>
+    <p>Borrowed from image generation: instead of generating left-to-right one token at a time, a DLM starts from noise/masked text and <strong>iteratively denoises the whole sequence in parallel</strong>. The prize is <em>speed</em> — parallel refinement sidesteps autoregression's fundamental per-token latency. It's the most-watched alternative to the AR paradigm; 2025–26 saw the first genuinely competitive diffusion LLMs.</p>
+
+    <h4 class="mini">Continual learning</h4>
+    <p>The challenge of updating a model with new knowledge <em>without</em> <strong>catastrophic forgetting</strong> (learning the new task wipes out old capabilities). Approaches: parameter-efficient adapters (LoRA) that isolate new learning, replaying old data, and regularization that protects important weights. It matters because full retraining is astronomically expensive, yet the world keeps changing — this is an open, actively-researched problem.</p>
+
+    <h4 class="mini">Vision Transformers (ViT)</h4>
+    <p>Proof that the Transformer isn't text-specific. A <strong>ViT</strong> chops an image into fixed patches (e.g. 16×16), linearly embeds each patch as a "token," adds positional info, and runs a standard Transformer encoder. This is the visual backbone behind modern multimodal models (CLIP, and the vision encoders in GPT-4o / Gemini / Claude). It's the bridge into Module 9 (Multimodal).</p>
+    <div class="call rec"><span class="lbl">Say this in the interview</span><p>"The through-line: attention generalizes far beyond text. Patch an image and it's ViT; the same core mechanism now underlies vision, audio, and multimodal models. The architecture is a general sequence-mixing primitive, not an NLP trick."</p></div>
+  </div>
+
+  <!-- ================= SECTION J ================= -->
+  <div class="sec-head"><span class="sec-num">J</span><h2>Production Troubleshooting Drills</h2></div>
+  <p class="sec-intro">The "your LLM does X — how do you fix it?" scenario questions. These separate people who <em>read</em> about LLMs from people who've <em>shipped</em> them. Keep answers crisp and lead with the highest-leverage fix.</p>
+
+  <div class="concept" id="troubleshoot">
+    <h3>Rapid-fire fixes</h3>
+    <table>
+      <tr><th>Symptom</th><th>Fix (lead with this)</th></tr>
+      <tr><td>Ignores your output format</td><td>Use structured-output / JSON mode or constrained decoding (grammar/schema) — don't rely on prompt begging; add a few-shot example and T=0.</td></tr>
+      <tr><td>Hits context limit on long docs</td><td>Chunk + retrieve (RAG) instead of stuffing; summarize/compress history; use a longer-context model only if retrieval isn't enough.</td></tr>
+      <tr><td>Won't say "I don't know"</td><td>Instruct explicit abstention + ground in retrieved context; add a "if not in context, say you don't know" rule; verify with a checker/judge.</td></tr>
+      <tr><td>Too verbose</td><td>Set max_tokens, instruct length ("≤3 sentences"), give terse few-shot examples; lower verbosity in the system prompt.</td></tr>
+      <tr><td>Leaks training data verbatim</td><td>Output filters + dedup training data; for closed APIs, this is the provider's job — add PII/secret scanners on outputs.</td></tr>
+      <tr><td>Generates deprecated code</td><td>Ground with RAG over current docs; pass version constraints in the prompt; add a lint/compile check in the loop.</td></tr>
+      <tr><td>Domain terms split into junk subwords</td><td>Add domain tokens to vocab + continue-pretrain, or pick a domain-appropriate tokenizer; validate token counts.</td></tr>
+      <tr><td>KV cache too large on long sequences</td><td>GQA/MLA models, KV-cache quantization, PagedAttention (vLLM), sliding-window attention, sink tokens.</td></tr>
+      <tr><td>OOM from quadratic attention</td><td>Flash Attention, sliding-window / sparse attention, chunk the input, shorter effective context via retrieval.</td></tr>
+      <tr><td>Distilled student fails hard reasoning</td><td>Distill on task data + CoT traces; fall back to teacher on low-confidence; add verification.</td></tr>
+      <tr><td>Reward-hacked after RLHF</td><td>Add KL penalty to reference model, improve/ensemble reward models, human spot-checks, cap reward.</td></tr>
+      <tr><td>Loses context after ~10 turns</td><td>Conversation memory: sliding-window + running summary; store long-term facts in a vector store and retrieve.</td></tr>
+      <tr><td>Repeats phrases in long output</td><td>Repetition/frequency penalty, higher temperature or top-p, no-repeat-ngram; check if the prompt is looping it.</td></tr>
+      <tr><td>Summaries hallucinate facts</td><td>Constrain to source ("only use the passage"), lower temperature, add a faithfulness check comparing claims to source.</td></tr>
+    </table>
+    <div class="call rec"><span class="lbl">Interview meta-move</span><p>For every one of these, first ask <em>"is this a prompt problem, a data/retrieval problem, a decoding problem, or a model-choice problem?"</em> Naming that decision tree before jumping to a fix is what makes you sound like an engineer who's debugged real systems.</p></div>
+  </div>
+
+  <div class="foot">
+    <p><strong>Module 1 complete.</strong> You can now reason from "what happens after Enter" all the way down to attention math, and back up to serving trade-offs and 2026-current architecture choices (RoPE · GQA/MLA · SwiGLU · RMSNorm · MoE · GRPO). That vertical range — product-level intuition <em>plus</em> mechanism — is exactly what mid/senior AI-engineering interviews test.</p>
+    <p style="margin-top:14px"><strong>Next up when you're ready:</strong> Module 2 — Prompt Engineering, or jump to Module 3 — RAG (your flagship). Say the word and I'll build the next one in the same format.</p>
+  </div>
+
+</main>
+</div>
+</body>
+</html>

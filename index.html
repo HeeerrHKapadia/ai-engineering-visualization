@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Engineer Interview Prep — Learn With Me</title>
+<meta name="description" content="A public, module-by-module AI engineering interview study guide. Learn along with me — new modules published as I complete them.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4F5F8; --paper:#FFFFFF; --ink:#14161C; --ink-soft:#4A4F5C; --ink-faint:#8A909E;
+    --line:#E3E6EC; --line-strong:#C9CDD6;
+    --accent:#3B3AE8; --accent-soft:#ECEBFF; --accent-ink:#2523B0;
+    --teal:#0E8C7E; --teal-soft:#E2F4F1;
+    --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --disp:'Space Grotesk',system-ui,sans-serif;
+    --body:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16.5px;line-height:1.62;-webkit-font-smoothing:antialiased}
+  ::selection{background:var(--accent);color:#fff}
+  .wrap{max-width:860px;margin:0 auto;padding:56px 24px 120px}
+
+  .hero{border:1px solid var(--line);background:var(--paper);border-radius:16px;padding:40px 38px 34px;position:relative;overflow:hidden;margin-bottom:36px}
+  .hero:before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:26px 26px;opacity:.5;mask-image:radial-gradient(120% 120% at 100% 0%,#000,transparent 60%)}
+  .hero>*{position:relative}
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  h1{font-family:var(--disp);font-weight:700;font-size:40px;line-height:1.08;margin:12px 0 12px;letter-spacing:-.01em}
+  .hero p{margin:0;max-width:62ch;color:var(--ink-soft);font-size:16px}
+  .hero .cta{display:inline-block;margin-top:22px;font-family:var(--disp);font-weight:600;font-size:15px;color:#fff;background:var(--accent);padding:11px 20px;border-radius:10px;text-decoration:none}
+  .hero .cta:hover{background:var(--accent-ink)}
+  .hero .gh{display:inline-block;margin-top:22px;margin-left:12px;font-family:var(--disp);font-weight:600;font-size:15px;color:var(--accent-ink);background:var(--accent-soft);padding:11px 20px;border-radius:10px;text-decoration:none}
+
+  h2{font-family:var(--disp);font-weight:700;font-size:24px;margin:44px 0 6px;padding-bottom:10px;border-bottom:2px solid var(--ink);letter-spacing:-.01em}
+  .sub{color:var(--ink-soft);font-size:15px;margin:0 0 18px}
+
+  .mod{display:block;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin:14px 0;text-decoration:none;color:inherit;transition:border-color .15s,box-shadow .15s}
+  .mod:hover{border-color:var(--accent);box-shadow:0 2px 14px rgba(59,58,232,.10)}
+  .mod .num{font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  .mod h3{font-family:var(--disp);font-size:20px;font-weight:600;margin:6px 0 6px;line-height:1.25}
+  .mod p{margin:0;font-size:14.5px;color:var(--ink-soft)}
+  .mod .tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+  .chip{font-family:var(--mono);font-size:11px;padding:4px 9px;border-radius:20px;background:var(--accent-soft);color:var(--accent-ink);font-weight:500}
+  .status{float:right;font-family:var(--mono);font-size:11px;padding:4px 10px;border-radius:20px;font-weight:600;letter-spacing:.06em}
+  .status.live{background:var(--teal-soft);color:var(--teal)}
+  .status.soon{background:#F0F1F5;color:var(--ink-faint)}
+
+  .mod.soon-card{opacity:.75;cursor:default}
+  .mod.soon-card:hover{border-color:var(--line);box-shadow:none}
+
+  .foot{margin-top:60px;padding-top:24px;border-top:2px solid var(--ink);font-size:14px;color:var(--ink-soft)}
+  .foot a{color:var(--accent-ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <div class="kicker">AI Engineering · Interview Prep</div>
+    <h1>Learn With Me</h1>
+    <p>Hi, I'm Heer. I'm preparing for AI engineering interviews in public — one module at a time. Every topic I work through becomes a visual, interview-focused study guide, published here so you can learn along with me.</p>
+    <a class="cta" href="modules/module-01-llm-fundamentals.html">Start Module 1 →</a>
+    <a class="gh" href="https://github.com/HeeerrHKapadia/ai-engineer-interview-preparation">Star on GitHub ⭐</a>
+  </div>
+
+  <h2>Modules</h2>
+  <p class="sub">Self-contained guides with diagrams, interview-style Q&amp;A framing, and pitfall callouts — kept current with the latest techniques.</p>
+
+  <a class="mod" href="modules/module-01-llm-fundamentals.html">
+    <span class="status live">✓ Available</span>
+    <div class="num">Module 01 / 12</div>
+    <h3>LLM Fundamentals</h3>
+    <p>How large language models actually work, from tokens to alignment — framed the way interviewers ask about it.</p>
+    <div class="tags">
+      <span class="chip">Transformers</span>
+      <span class="chip">Attention · GQA · MLA</span>
+      <span class="chip">KV cache · Flash Attention</span>
+      <span class="chip">RLHF · DPO · GRPO</span>
+      <span class="chip">MoE · Distillation</span>
+    </div>
+  </a>
+
+  <div class="mod soon-card">
+    <span class="status soon">Coming soon</span>
+    <div class="num">Modules 02 – 12</div>
+    <h3>More on the way</h3>
+    <p>Agents, RAG, evals, fine-tuning, serving &amp; inference optimization, and more — published as I complete them. Star the repo to follow along.</p>
+  </div>
+
+  <div class="foot">
+    Built in public by <strong>Heer Kapadia</strong> · Found a mistake or have a suggestion?
+    <a href="https://github.com/HeeerrHKapadia/ai-engineer-interview-preparation/issues">Open an issue</a> · MIT licensed — learn freely, share freely.
+  </div>
+
+</div>
+</body>
+</html>
