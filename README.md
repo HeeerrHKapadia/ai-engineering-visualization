@@ -4,20 +4,21 @@ Hi, I'm Heer! I'm preparing for AI Engineering interviews, and instead of studyi
 
 If you're on the same journey, star ⭐ the repo and follow along — new modules land as I complete them.
 
+**🌐 Read everything on the site: [heeerrhkapadia.github.io/ai-engineer-interview-preparation](https://heeerrhkapadia.github.io/ai-engineer-interview-preparation/)**
+
 ## How to use this repo
 
 Each module is a self-contained HTML study guide — richly formatted with diagrams, interview-style Q&A framing, callouts for pitfalls, and content kept current with the latest techniques.
 
 **To read a module:**
-1. Download the `.html` file from the [`modules/`](modules/) folder and open it in any browser, **or**
-2. View it directly in your browser via HTML Preview:
-   [📖 Open Module 1](https://htmlpreview.github.io/?https://github.com/HeeerrHKapadia/ai-engineer-interview-preparation/blob/main/modules/module-01-llm-fundamentals.html)
+1. Browse the [site](https://heeerrhkapadia.github.io/ai-engineer-interview-preparation/) — every module gets its own page, e.g. [📖 Module 1 — LLM Fundamentals](https://heeerrhkapadia.github.io/ai-engineer-interview-preparation/modules/module-01-llm-fundamentals.html), **or**
+2. Download the `.html` file from the [`modules/`](modules/) folder and open it in any browser.
 
 ## Modules
 
 | # | Module | Status |
 |---|--------|--------|
-| 01 | [LLM Fundamentals](modules/module-01-llm-fundamentals.html) | ✅ Available |
+| 01 | [LLM Fundamentals](https://heeerrhkapadia.github.io/ai-engineer-interview-preparation/modules/module-01-llm-fundamentals.html) | ✅ Available |
 | 02–12 | More modules on the way — agents, RAG, evals, fine-tuning, serving & more | 🔜 In progress |
 
 ## What's inside Module 1 — LLM Fundamentals
