@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Publish to GitHub Pages
 
 on:
   push:
@@ -6,32 +6,17 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  publish:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Pages
-        id: setup
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-      - name: Upload site
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: .
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Sync main to gh-pages
+        run: git push --force origin HEAD:gh-pages
