@@ -3,6 +3,10 @@ name: Publish to GitHub Pages
 on:
   push:
     branches: [main]
+  # Self-heal: if a push-triggered run never fires or gets stuck, this re-syncs
+  # gh-pages so the published site can't sit stale behind main indefinitely.
+  schedule:
+    - cron: '17 */6 * * *'
   workflow_dispatch:
 
 permissions:
@@ -16,7 +20,26 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout main
         uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Check the site files are present
+        run: |
+          missing=0
+          for f in index.html .nojekyll modules/module-01-llm-fundamentals.html modules/module-02-prompt-engineering.html; do
+            if [ -f "$f" ]; then
+              echo "ok: $f"
+            else
+              echo "MISSING: $f"
+              missing=1
+            fi
+          done
+          echo "modules/ contains:"
+          ls -1 modules/
+          exit $missing
+
       - name: Sync main to gh-pages
-        run: git push --force origin HEAD:gh-pages
+        run: git push --force origin main:gh-pages

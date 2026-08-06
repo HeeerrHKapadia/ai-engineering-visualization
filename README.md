@@ -57,6 +57,21 @@ Teaching is the best way to learn. By turning my prep notes into something worth
 
 Found a mistake or have a suggestion? Open an issue — I'd love the feedback.
 
+## How the site is published
+
+Every module lives on `main`. A workflow ([`deploy-pages.yml`](.github/workflows/deploy-pages.yml))
+force-syncs `main` onto the `gh-pages` branch, and GitHub Pages serves that branch verbatim
+(`.nojekyll` skips the Jekyll build). So a page on `main` becomes live once the sync runs *and*
+Pages rebuilds.
+
+If a module 404s on the site even though the file is in [`modules/`](modules/), the Pages build is
+behind — check the **Actions** tab for a queued or failed *Publish to GitHub Pages* / *pages build
+and deployment* run. Until it catches up, download the `.html` from `modules/` and open it locally.
+
+The `main` → `gh-pages` hop is only there because Pages was pointed at `gh-pages`. Pointing
+**Settings → Pages → Source → Deploy from a branch → `main` / (root)** would remove the workflow
+from the critical path entirely — merges to `main` would publish directly.
+
 ## License
 
 Released under the [MIT License](LICENSE). Learn freely, share freely.
