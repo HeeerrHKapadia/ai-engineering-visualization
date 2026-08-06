@@ -19,7 +19,8 @@ Each module is a self-contained HTML study guide — richly formatted with diagr
 | # | Module | Status |
 |---|--------|--------|
 | 01 | [LLM Fundamentals](https://heeerrhkapadia.github.io/ai-engineer-interview-preparation/modules/module-01-llm-fundamentals.html) | ✅ Available |
-| 02–12 | More modules on the way — agents, RAG, evals, fine-tuning, serving & more | 🔜 In progress |
+| 02 | [Prompt Engineering](https://heeerrhkapadia.github.io/ai-engineer-interview-preparation/modules/module-02-prompt-engineering.html) | ✅ Available |
+| 03–12 | More modules on the way — agents, RAG, evals, fine-tuning, serving & more | 🔜 In progress |
 
 ## What's inside Module 1 — LLM Fundamentals
 
@@ -34,6 +35,20 @@ A ground-up tour of how large language models actually work, framed the way inte
 - **G · Scaling & Efficiency** — Mixture of Experts, distillation, SLMs & LRMs
 - **H · Alignment** — RLHF, PPO, DPO, GRPO
 - **I · Frontier** — RLMs, DLMs, continual learning, ViT
+- **J · Production** — troubleshooting drills for real-world scenarios
+
+## What's inside Module 2 — Prompt Engineering
+
+How to get reliable, structured, safe behaviour out of a model — and what goes wrong when you don't:
+
+- **A · Foundations** — what prompt engineering is and why it matters, prompt anatomy & templates, system prompts & roles, prompt engineering vs. prompt tuning
+- **B · Shot-based prompting** — zero-shot, one-shot, few-shot
+- **C · Reasoning** — Chain-of-Thought, self-consistency, Tree-of-Thoughts, ReAct
+- **D · Composition** — prompt chaining, meta-prompts & DSPy
+- **E · Structured Output** — JSON/XML output and parsers
+- **F · Context** — multi-turn conversations, "lost in the middle," multilingual prompting
+- **G · Security** — prompt injection, jailbreaking
+- **H · Optimize & Evaluate** — cost & latency, evaluating and iterating on prompts, common failure modes
 - **J · Production** — troubleshooting drills for real-world scenarios
 
 ## Why "learn with me"?
