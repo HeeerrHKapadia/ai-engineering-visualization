@@ -20,7 +20,8 @@ Each module is a self-contained HTML study guide — richly formatted with diagr
 |---|--------|--------|
 | 01 | [LLM Fundamentals](https://heeerrhkapadia.github.io/ai-engineer-interview-preparation/modules/module-01-llm-fundamentals.html) | ✅ Available |
 | 02 | [Prompt Engineering](https://heeerrhkapadia.github.io/ai-engineer-interview-preparation/modules/module-02-prompt-engineering.html) | ✅ Available |
-| 03–12 | More modules on the way — agents, RAG, evals, fine-tuning, serving & more | 🔜 In progress |
+| 03 | [Retrieval-Augmented Generation](https://heeerrhkapadia.github.io/ai-engineer-interview-preparation/modules/module-03-rag.html) | ✅ Available |
+| 04–12 | More modules on the way — agents, evals, fine-tuning, serving & more | 🔜 In progress |
 
 ## What's inside Module 1 — LLM Fundamentals
 
@@ -49,6 +50,19 @@ How to get reliable, structured, safe behaviour out of a model — and what goes
 - **F · Context** — multi-turn conversations, "lost in the middle," multilingual prompting
 - **G · Security** — prompt injection, jailbreaking
 - **H · Optimize & Evaluate** — cost & latency, evaluating and iterating on prompts, common failure modes
+- **J · Production** — troubleshooting drills for real-world scenarios
+
+## What's inside Module 3 — Retrieval-Augmented Generation
+
+How to ground a model in your own data, and everything that decides whether the answers are actually trustworthy:
+
+- **A · Foundations** — what RAG is and why it exists, architecture & components, RAG vs. fine-tuning, and the "is RAG dead in 2026?" debate
+- **B · Indexing & Chunking** — chunking strategies, fixed vs. recursive vs. semantic, parent-child chunking, contextual retrieval, handling tables/SQL/PDFs
+- **C · Embeddings** — embedding models and how to choose one
+- **D · Retrieval** — hybrid search with Reciprocal Rank Fusion, re-ranking, metadata filtering
+- **E · Advanced RAG** — query transformation, multi-hop retrieval & "lost in the middle," agentic RAG, Self-RAG & CRAG, GraphRAG
+- **F · Evaluation** — the RAG triad, citations
+- **G · Production & Security** — scale & latency, freshness & versioning, failure modes
 - **J · Production** — troubleshooting drills for real-world scenarios
 
 ## Why "learn with me"?
