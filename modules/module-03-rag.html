@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 3 · Retrieval-Augmented Generation — AI Engineering Interview Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F4F5F8; --paper:#FFFFFF; --ink:#14161C; --ink-soft:#4A4F5C; --ink-faint:#8A909E;
+    --line:#E3E6EC; --line-strong:#C9CDD6;
+    --accent:#3B3AE8; --accent-soft:#ECEBFF; --accent-ink:#2523B0;
+    --amber:#B5720A; --amber-soft:#FBF1DF;
+    --teal:#0E8C7E; --teal-soft:#E2F4F1;
+    --rose:#C0356B; --rose-soft:#FBE8F0;
+    --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --disp:'Space Grotesk',system-ui,sans-serif;
+    --body:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16.5px;line-height:1.62;-webkit-font-smoothing:antialiased}
+  ::selection{background:var(--accent);color:#fff}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:242px 1fr;gap:44px}
+  @media(max-width:920px){.wrap{grid-template-columns:1fr;gap:0}}
+  aside{position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;padding:34px 0 40px;border-right:1px solid var(--line)}
+  @media(max-width:920px){aside{position:static;height:auto;border-right:none;border-bottom:1px solid var(--line);padding:20px 0}}
+  .nav-badge{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;font-weight:600;margin-bottom:4px}
+  .nav-title{font-family:var(--disp);font-weight:700;font-size:19px;line-height:1.2;margin:0 0 22px}
+  nav a{display:block;font-size:13.5px;color:var(--ink-soft);text-decoration:none;padding:5px 0 5px 12px;border-left:2px solid transparent;line-height:1.35}
+  nav a:hover{color:var(--accent);border-left-color:var(--accent-soft)}
+  nav a.flag{color:var(--rose);font-weight:600}
+  nav .grp{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-faint);margin:18px 0 6px;padding-left:12px;font-weight:600}
+  main{padding:38px 0 120px;min-width:0}
+  .mast{border:1px solid var(--line);background:var(--paper);border-radius:16px;padding:34px 34px 30px;margin-bottom:40px;position:relative;overflow:hidden}
+  .mast:before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:26px 26px;opacity:.5;mask-image:radial-gradient(120% 120% at 100% 0%,#000,transparent 60%)}
+  .mast>*{position:relative}
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  .mast h1{font-family:var(--disp);font-weight:700;font-size:34px;line-height:1.08;margin:10px 0 8px;letter-spacing:-.01em}
+  .mast p{margin:0;max-width:64ch;color:var(--ink-soft);font-size:15.5px}
+  .mast .meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+  .chip{font-family:var(--mono);font-size:11.5px;padding:5px 10px;border-radius:20px;background:var(--accent-soft);color:var(--accent-ink);font-weight:500}
+  .chip.flag{background:var(--rose-soft);color:var(--rose)}
+  section{margin-bottom:14px}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin:46px 0 8px;padding-bottom:10px;border-bottom:2px solid var(--ink)}
+  .sec-num{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--accent);white-space:nowrap}
+  .sec-head h2{font-family:var(--disp);font-weight:700;font-size:25px;margin:0;letter-spacing:-.01em}
+  .sec-intro{color:var(--ink-soft);font-size:15px;margin:0 0 8px}
+  .concept{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:22px 24px;margin:16px 0}
+  .concept.flagship{border:1.5px solid var(--rose);box-shadow:0 0 0 4px var(--rose-soft)}
+  .concept h3{font-family:var(--disp);font-size:18.5px;font-weight:600;margin:0 0 4px;line-height:1.25}
+  .flagtag{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;background:var(--rose);color:#fff;padding:2px 7px;border-radius:5px;margin-left:8px;vertical-align:middle;font-weight:600}
+  .q{font-family:var(--mono);font-size:12.5px;color:var(--ink-faint);font-weight:500;margin:0 0 12px;letter-spacing:.01em}
+  .concept p{margin:11px 0}.concept p:first-of-type{margin-top:0}
+  strong{font-weight:600;color:var(--ink)}
+  code{font-family:var(--mono);font-size:.87em;background:#F0F1F5;padding:1.5px 5px;border-radius:5px;color:var(--accent-ink)}
+  .lead{font-size:16.5px}
+  .call{border-radius:10px;padding:13px 16px;margin:14px 0;font-size:14.5px;line-height:1.55;border:1px solid}
+  .call .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;font-weight:600;display:block;margin-bottom:4px}
+  .call.ex{background:var(--teal-soft);border-color:#BCE3DD}.call.ex .lbl{color:var(--teal)}
+  .call.rec{background:var(--amber-soft);border-color:#EBD6AC}.call.rec .lbl{color:var(--amber)}
+  .call.latest{background:var(--accent-soft);border-color:#CFCDFB}.call.latest .lbl{color:var(--accent-ink)}
+  .call.pit{background:var(--rose-soft);border-color:#F0C2D5}.call.pit .lbl{color:var(--rose)}
+  .call p{margin:6px 0 0}.call p:first-child{margin-top:0}
+  figure{margin:20px 0;border:1px solid var(--line-strong);border-radius:12px;overflow:hidden;background:var(--paper)}
+  figure .figtop{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-bottom:1px solid var(--line);background:#FbFBFD}
+  figure .fignum{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--accent);font-weight:600}
+  figure .figttl{font-family:var(--mono);font-size:11px;color:var(--ink-faint)}
+  figure .figbody{padding:20px 18px;overflow-x:auto}
+  figure svg{display:block;margin:0 auto;max-width:100%;height:auto}
+  figcaption{padding:0 16px 14px;font-size:13px;color:var(--ink-soft);font-style:italic}
+  .s-box{fill:var(--paper);stroke:var(--ink);stroke-width:1.5}
+  .s-accent{fill:var(--accent-soft);stroke:var(--accent);stroke-width:1.5}
+  .s-teal{fill:var(--teal-soft);stroke:var(--teal);stroke-width:1.5}
+  .s-amber{fill:var(--amber-soft);stroke:var(--amber);stroke-width:1.5}
+  .s-rose{fill:var(--rose-soft);stroke:var(--rose);stroke-width:1.5}
+  .s-t{font-family:var(--body);font-size:13px;fill:var(--ink)}
+  .s-tm{font-family:var(--mono);font-size:12px;fill:var(--ink)}
+  .s-ts{font-family:var(--mono);font-size:10.5px;fill:var(--ink-soft)}
+  .s-line{stroke:var(--ink-soft);stroke-width:1.5;fill:none}
+  .s-flow{stroke:var(--accent);stroke-width:2;fill:none}
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);font-weight:600;border-bottom:1.5px solid var(--line-strong)}
+  tr td:first-child{font-weight:600;white-space:nowrap}
+  ul.tight{margin:10px 0;padding-left:20px}ul.tight li{margin:5px 0}
+  .foot{margin-top:60px;padding-top:24px;border-top:2px solid var(--ink);font-size:14px;color:var(--ink-soft)}
+  .foot strong{color:var(--ink)}
+  h4.mini{font-family:var(--disp);font-size:15px;font-weight:600;margin:16px 0 4px;color:var(--accent-ink)}
+  .promptbox{font-family:var(--mono);font-size:12px;line-height:1.5;background:#0F1117;color:#D8DCE6;border-radius:8px;padding:14px 16px;margin:12px 0;white-space:pre-wrap;overflow-x:auto}
+  .promptbox .sys{color:#7FB0FF}.promptbox .usr{color:#7FE3C7}.promptbox .out{color:#E8B563}.promptbox .cm{color:#6B7280}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<aside>
+  <div style="padding:0 12px">
+    <div class="nav-badge">Module 03 / 14</div>
+    <div class="nav-title">Retrieval-Augmented Generation</div>
+  </div>
+  <nav>
+    <div class="grp">A · Foundations</div>
+    <a href="#what">What &amp; why RAG</a>
+    <a href="#arch">Architecture &amp; components</a>
+    <a href="#vs-ft">RAG vs fine-tuning</a>
+    <a href="#dead">Is RAG dead? (2026)</a>
+    <div class="grp">B · Indexing &amp; Chunking</div>
+    <a href="#chunking">Chunking strategies</a>
+    <a href="#chunk-compare">Fixed / recursive / semantic</a>
+    <a href="#parent">Parent-child chunking</a>
+    <a href="#contextual">Contextual retrieval</a>
+    <a href="#structured">Tables, SQL &amp; PDFs</a>
+    <div class="grp">C · Embeddings</div>
+    <a href="#emb">Embedding models</a>
+    <a href="#emb-choose">Choosing one</a>
+    <div class="grp">D · Retrieval</div>
+    <a href="#hybrid">Hybrid search + RRF</a>
+    <a href="#rerank">Re-ranking</a>
+    <a href="#metadata">Metadata filtering</a>
+    <a href="#query-t">Query transformation</a>
+    <a href="#multihop">Multi-hop &amp; lost-in-middle</a>
+    <div class="grp">E · Advanced RAG</div>
+    <a href="#agentic">Agentic RAG</a>
+    <a href="#selfrag">Self-RAG &amp; CRAG</a>
+    <a href="#graphrag">GraphRAG</a>
+    <div class="grp">F · Evaluation</div>
+    <a href="#eval">The RAG triad</a>
+    <div class="grp">G · Production &amp; Security</div>
+    <a href="#access" class="flag">Access control (RAGGuard)</a>
+    <a href="#citation">Citations</a>
+    <a href="#scale">Scale &amp; latency</a>
+    <a href="#freshness">Freshness &amp; versioning</a>
+    <a href="#failures">Failure modes</a>
+    <div class="grp">J · Production</div>
+    <a href="#troubleshoot">Troubleshooting drills</a>
+  </nav>
+</aside>
+
+<main>
+  <div class="mast">
+    <div class="kicker">AI Engineering · Interview Prep · Flagship Module</div>
+    <h1>Module 3 — Retrieval-Augmented Generation</h1>
+    <p>The deepest guide in the series, because RAG is the single most-tested topic for the applied / forward-deployed / LLM-engineer roles you're targeting — and it's your portfolio centerpiece. Interviewers go hardest here <em>because</em> RAGGuard is on your resume, so this covers the full stack: chunking, hybrid retrieval, reranking, GraphRAG, Self-RAG, evals, and the multi-tenant access-control angle that is literally your project.</p>
+    <div class="meta">
+      <span class="chip">Hybrid search + RRF + rerank</span>
+      <span class="chip">GraphRAG · Self-RAG · Agentic RAG</span>
+      <span class="chip flag">RAGGuard: permission-aware RAG</span>
+      <span class="chip">Current to mid-2026</span>
+    </div>
+  </div>
+
+  <p class="lead" style="color:var(--ink-soft);margin-bottom:8px">
+    <strong style="color:var(--ink)">The 2026 one-liner to open with.</strong> "Naive 2023-style RAG — chunk, embed, dump into Pinecone — is dead. <em>Sophisticated</em> RAG is thriving. The skill isn't 'do RAG,' it's knowing which retrieval architecture the problem actually needs." Same colour code as before — <span style="color:var(--amber);font-weight:600">amber</span> = say-this, <span style="color:var(--teal);font-weight:600">teal</span> = example, <span style="color:var(--accent);font-weight:600">indigo</span> = latest, <span style="color:var(--rose);font-weight:600">rose</span> = trap. <span style="color:var(--rose);font-weight:600">Rose-bordered cards</span> are your RAGGuard connection points — rehearse those hardest.
+  </p>
+
+  <!-- ============ SECTION A ============ -->
+  <div class="sec-head"><span class="sec-num">A</span><h2>Foundations</h2></div>
+  <p class="sec-intro">What RAG is, the two pipelines every RAG system has, and the decision that frames the whole module: retrieve, fine-tune, or just use a big context window?</p>
+
+  <div class="concept" id="what">
+    <h3>What is RAG, and why is it important?</h3>
+    <p class="q">Q · What is Retrieval-Augmented Generation, and why is it important?</p>
+    <p><strong>RAG</strong> augments an LLM's generation with relevant information <em>retrieved at query time</em> from an external knowledge source. Instead of relying only on what's baked into the model's frozen weights (parametric memory), you fetch the right documents and put them in the context so the model answers <em>from</em> them. It's "open-book exam" instead of "closed-book."</p>
+    <p>Why it matters — RAG solves the four core weaknesses of a bare LLM:</p>
+    <ul class="tight">
+      <li><strong>Hallucination →</strong> grounding answers in retrieved evidence dramatically reduces made-up facts.</li>
+      <li><strong>Stale knowledge →</strong> the model's training cutoff doesn't matter; update the knowledge base, not the weights.</li>
+      <li><strong>No private/domain data →</strong> the model can answer about <em>your</em> internal docs it never saw in training.</li>
+      <li><strong>No attribution →</strong> because answers come from specific sources, you can cite them (trust + auditability).</li>
+    </ul>
+    <div class="call rec"><span class="lbl">Say this in the interview</span><p>"RAG turns a closed-book model into an open-book one. It's the cheapest, fastest, most auditable way to give an LLM current, private, and citable knowledge — without the cost and staleness of retraining. That's why it's the default architecture for enterprise LLM apps."</p></div>
+  </div>
+
+  <div class="concept" id="arch">
+    <h3>Architecture &amp; key components of a RAG pipeline</h3>
+    <p class="q">Q · Explain the architecture of a basic RAG system and its key components.</p>
+    <p>Every RAG system is two pipelines: an <strong>offline indexing</strong> pipeline (build the searchable knowledge base) and an <strong>online query</strong> pipeline (retrieve + generate per request). Drawing both — and knowing they're separate — is the answer interviewers want.</p>
+
+    <figure>
+      <div class="figtop"><span class="fignum">FIG. 01</span><span class="figttl">rag_architecture.svg — the two pipelines</span></div>
+      <div class="figbody">
+        <svg viewBox="0 0 780 320" role="img" aria-label="RAG architecture: indexing and query pipelines">
+          <defs><marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 z" fill="#3B3AE8"/></marker></defs>
+          <!-- indexing pipeline (top) -->
+          <text class="s-ts" x="20" y="24" fill="var(--ink-faint)">OFFLINE · INDEXING (build once, update as docs change)</text>
+          <rect class="s-box" x="20" y="34" width="96" height="44" rx="8"/><text class="s-ts" x="68" y="52" text-anchor="middle">documents</text><text class="s-ts" x="68" y="66" text-anchor="middle" fill="var(--ink-faint)">PDF, HTML…</text>
+          <rect class="s-box" x="148" y="34" width="90" height="44" rx="8"/><text class="s-ts" x="193" y="52" text-anchor="middle">parse +</text><text class="s-ts" x="193" y="66" text-anchor="middle">chunk</text>
+          <rect class="s-accent" x="270" y="34" width="90" height="44" rx="8"/><text class="s-ts" x="315" y="52" text-anchor="middle">embed</text><text class="s-ts" x="315" y="66" text-anchor="middle" fill="var(--ink-faint)">→ vectors</text>
+          <rect class="s-teal" x="392" y="34" width="110" height="44" rx="8"/><text class="s-ts" x="447" y="52" text-anchor="middle">vector DB</text><text class="s-ts" x="447" y="66" text-anchor="middle" fill="var(--ink-faint)">+ metadata</text>
+          <line class="s-flow" x1="116" y1="56" x2="146" y2="56" marker-end="url(#ar)"/>
+          <line class="s-flow" x1="238" y1="56" x2="268" y2="56" marker-end="url(#ar)"/>
+          <line class="s-flow" x1="360" y1="56" x2="390" y2="56" marker-end="url(#ar)"/>
+          <!-- divider -->
+          <line x1="20" y1="104" x2="760" y2="104" stroke="var(--line)" stroke-dasharray="4 4"/>
+          <!-- query pipeline (bottom) -->
+          <text class="s-ts" x="20" y="128" fill="var(--ink-faint)">ONLINE · QUERY (per request)</text>
+          <rect class="s-box" x="20" y="150" width="90" height="44" rx="8"/><text class="s-ts" x="65" y="176" text-anchor="middle">user query</text>
+          <rect class="s-accent" x="142" y="150" width="90" height="44" rx="8"/><text class="s-ts" x="187" y="168" text-anchor="middle">embed</text><text class="s-ts" x="187" y="182" text-anchor="middle">query</text>
+          <rect class="s-teal" x="264" y="150" width="110" height="44" rx="8"/><text class="s-ts" x="319" y="168" text-anchor="middle">retrieve top-k</text><text class="s-ts" x="319" y="182" text-anchor="middle" fill="var(--ink-faint)">(+ rerank)</text>
+          <rect class="s-amber" x="406" y="150" width="110" height="44" rx="8"/><text class="s-ts" x="461" y="168" text-anchor="middle">augment prompt</text><text class="s-ts" x="461" y="182" text-anchor="middle" fill="var(--ink-faint)">query+context</text>
+          <rect class="s-box" x="548" y="150" width="90" height="44" rx="8"/><text class="s-ts" x="593" y="168" text-anchor="middle">LLM</text><text class="s-ts" x="593" y="182" text-anchor="middle">generate</text>
+          <rect class="s-box" x="670" y="150" width="90" height="44" rx="8"/><text class="s-ts" x="715" y="168" text-anchor="middle">answer</text><text class="s-ts" x="715" y="182" text-anchor="middle" fill="var(--teal)">+ citations</text>
+          <line class="s-flow" x1="110" y1="172" x2="140" y2="172" marker-end="url(#ar)"/>
+          <line class="s-flow" x1="232" y1="172" x2="262" y2="172" marker-end="url(#ar)"/>
+          <line class="s-flow" x1="374" y1="172" x2="404" y2="172" marker-end="url(#ar)"/>
+          <line class="s-flow" x1="516" y1="172" x2="546" y2="172" marker-end="url(#ar)"/>
+          <line class="s-flow" x1="638" y1="172" x2="668" y2="172" marker-end="url(#ar)"/>
+          <!-- vector DB link between pipelines -->
+          <line class="s-line" x1="447" y1="78" x2="447" y2="104" stroke-dasharray="3 3"/>
+          <path class="s-line" d="M405,120 C405,140 360,140 340,148" stroke-dasharray="3 3" marker-end="url(#ar)"/>
+          <text class="s-ts" x="470" y="120" fill="var(--ink-faint)">shared store</text>
+        </svg>
+      </div>
+      <figcaption>The <strong>five online components</strong> to name: query encoder → retriever (vector DB) → optional reranker → prompt augmenter → generator. The offline side is: loader → chunker → embedder → indexed store. Most quality problems live in <em>indexing</em>, not generation.</figcaption>
+    </figure>
+    <div class="call rec"><span class="lbl">Interview framing</span><p>"Retrieve → Augment → Generate is the loop, but 80% of real quality comes from the offline indexing choices — chunking, embeddings, metadata — plus reranking. If retrieval is bad, no prompt or model can save the answer. Garbage retrieved, garbage generated."</p></div>
+  </div>
+
+  <div class="concept" id="vs-ft">
+    <h3>RAG vs fine-tuning — when to use each</h3>
+    <p class="q">Q · Compare RAG vs fine-tuning. When would you use each?</p>
+    <p>The classic trap is treating these as competitors. They solve <em>different</em> problems: <strong>RAG changes what the model knows</strong> (knowledge injection); <strong>fine-tuning changes how the model behaves</strong> (skill, format, tone, domain style). The best systems often use both.</p>
+    <table>
+      <tr><th></th><th>RAG</th><th>Fine-tuning</th></tr>
+      <tr><td>Best for</td><td>Facts, knowledge, current/private data</td><td>Behavior, format, style, a skill/task</td></tr>
+      <tr><td>Update cost</td><td>Cheap — re-index docs</td><td>Expensive — retrain</td></tr>
+      <tr><td>Freshness</td><td>Real-time</td><td>Frozen at training</td></tr>
+      <tr><td>Citations</td><td>Yes (traceable sources)</td><td>No</td></tr>
+      <tr><td>Hallucination</td><td>Reduces it (grounded)</td><td>Can increase it</td></tr>
+      <tr><td>Analogy</td><td>Open-book exam</td><td>Studying to become an expert</td></tr>
+    </table>
+    <div class="call rec"><span class="lbl">The decision heuristic to say out loud</span><p>"<em>Knowledge problem → RAG. Behavior problem → fine-tune.</em> If the model doesn't <em>know</em> something, retrieve it. If it doesn't know <em>how to act</em> — wrong format, wrong tone, can't follow a niche task — fine-tune. Start with prompt engineering, add RAG for knowledge, and only fine-tune when prompt+RAG can't hit the behavior bar, because it's the most expensive and least flexible."</p></div>
+  </div>
+
+  <div class="concept" id="dead">
+    <h3>"Is RAG dead?" — the long-context debate</h3>
+    <p class="q">Q · With million-token context windows, is RAG obsolete? (a 2026 curveball)</p>
+    <p>This is the hot 2026 question and a fantastic one to nail because most candidates give a naive answer. The reality: <strong>naive RAG is dead; sophisticated RAG is thriving.</strong> Million-token windows (Gemini, Claude) tempt you to just dump everything in the prompt — but that fails for real corpora because of <strong>context rot</strong> (accuracy degrades as irrelevant tokens fill the window), cost (paying to process huge context every call), freshness, and — critically for you — <strong>access control and citations</strong>.</p>
+    <div class="call latest"><span class="lbl">The nuanced 2026 answer that wins</span><p>"It's not binary. Long context wins for <em>small</em> (&lt;200k tokens), stable corpora needing whole-document reasoning. RAG wins when the relevant material is a tiny fraction of a large, changing, or access-controlled corpus — you can't fit 10M enterprise docs in a window, and even if you could, context rot kills accuracy. The 2026 winning pattern is <strong>hybrid: retrieve to narrow, then use long context to reason across what you retrieved.</strong> Prompt caching also shifted the economics. It's a context-engineering decision, not a tool war."</p></div>
+    <div class="call pit"><span class="lbl">RAGGuard hook</span><p>Access control is a decisive RAG advantage you should raise unprompted: you <em>cannot</em> enforce per-user document permissions by stuffing everything into a context window — the model would see documents the user isn't allowed to. RAG lets you filter <em>before</em> retrieval. This is exactly what RAGGuard exists to do (see §G).</p></div>
+  </div>
+
+
+  <!-- ============ SECTION B ============ -->
+  <div class="sec-head"><span class="sec-num">B</span><h2>Indexing &amp; Chunking</h2></div>
+  <p class="sec-intro">Where most RAG quality is won or lost. If you chunk badly, retrieval never recovers — so interviewers probe this hard to see if you've actually built a system.</p>
+
+  <div class="concept" id="chunking">
+    <h3>Chunking strategies &amp; choosing chunk size</h3>
+    <p class="q">Q · What are chunking strategies, and how do you choose the right chunk size?</p>
+    <p><strong>Chunking</strong> splits documents into pieces small enough to embed and retrieve precisely, but large enough to carry self-contained meaning. It's a fundamental tension: <strong>too small</strong> → chunks lose context and you retrieve fragments that don't answer the question; <strong>too large</strong> → embeddings become "diluted" averages of many topics, hurting retrieval precision, and you waste context tokens.</p>
+    <p><strong>Choosing size is empirical, not a magic number</strong> — it depends on document type and query type. Dense technical docs and short factual queries want smaller chunks (~256 tokens); narrative or reasoning content wants larger (~512–1024). Add <strong>overlap</strong> (e.g. 10–20%) so a sentence split across a boundary still appears whole in one chunk.</p>
+    <div class="call rec"><span class="lbl">Say this in the interview</span><p>"I don't guess chunk size — I treat it as a hyperparameter and tune it against a retrieval eval set. Start ~512 tokens with ~15% overlap as a baseline, then measure context precision/recall and adjust per document type. Chunk size is not a constant across a heterogeneous corpus."</p></div>
+  </div>
+
+  <div class="concept" id="chunk-compare">
+    <h3>Fixed-size vs recursive vs semantic chunking</h3>
+    <p class="q">Q · Compare fixed-size, semantic, and recursive chunking.</p>
+    <figure>
+      <div class="figtop"><span class="fignum">FIG. 02</span><span class="figttl">chunking_strategies.svg</span></div>
+      <div class="figbody">
+        <svg viewBox="0 0 700 210" role="img" aria-label="Chunking strategies compared">
+          <!-- fixed -->
+          <text class="s-t" x="115" y="22" text-anchor="middle" font-weight="600">Fixed-size</text>
+          <text class="s-ts" x="115" y="38" text-anchor="middle">every N chars</text>
+          <rect class="s-rose" x="30" y="50" width="170" height="24"/><rect class="s-accent" x="30" y="76" width="170" height="24"/><rect class="s-rose" x="30" y="102" width="170" height="24"/>
+          <line x1="30" y1="88" x2="200" y2="88" stroke="#fff" stroke-width="2"/>
+          <text class="s-ts" x="115" y="150" text-anchor="middle" fill="var(--rose)">✗ cuts mid-sentence</text>
+          <text class="s-ts" x="115" y="166" text-anchor="middle">fast, naive</text>
+          <!-- recursive -->
+          <text class="s-t" x="350" y="22" text-anchor="middle" font-weight="600">Recursive ✓ default</text>
+          <text class="s-ts" x="350" y="38" text-anchor="middle">split on ¶ → sentence → word</text>
+          <rect class="s-teal" x="265" y="50" width="170" height="20"/><rect class="s-accent" x="265" y="74" width="170" height="30"/><rect class="s-teal" x="265" y="108" width="170" height="18"/>
+          <text class="s-ts" x="350" y="150" text-anchor="middle" fill="var(--teal)">✓ respects structure</text>
+          <text class="s-ts" x="350" y="166" text-anchor="middle">best cost/quality</text>
+          <!-- semantic -->
+          <text class="s-t" x="585" y="22" text-anchor="middle" font-weight="600">Semantic</text>
+          <text class="s-ts" x="585" y="38" text-anchor="middle">split where meaning shifts</text>
+          <rect class="s-accent" x="500" y="50" width="170" height="34"/><rect class="s-teal" x="500" y="88" width="170" height="16"/><rect class="s-amber" x="500" y="108" width="170" height="24"/>
+          <text class="s-ts" x="585" y="150" text-anchor="middle" fill="var(--accent)">✓ topic-coherent</text>
+          <text class="s-ts" x="585" y="166" text-anchor="middle" fill="var(--rose)">slow, embeds while chunking</text>
+        </svg>
+      </div>
+      <figcaption>Colored blocks = chunks. Fixed slices blindly by length; recursive respects document structure (the pragmatic default); semantic uses embedding-similarity between sentences to cut where the topic changes.</figcaption>
+    </figure>
+    <ul class="tight">
+      <li><strong>Fixed-size:</strong> split every N characters/tokens. Simple and fast, but blindly cuts through sentences and ideas. Fine as a baseline, rarely best.</li>
+      <li><strong>Recursive (recommended default):</strong> split hierarchically — try paragraph breaks first, then sentences, then words — until chunks fit the size target. Respects natural boundaries with almost no extra cost. This is what most production systems use.</li>
+      <li><strong>Semantic:</strong> embed sentences and place a boundary where consecutive-sentence similarity drops (a topic shift). Produces the most topic-coherent chunks but is compute-heavy (you embed during indexing to decide splits) and can be inconsistent.</li>
+    </ul>
+    <div class="call latest"><span class="lbl">Latest</span><p>Beyond these, know <strong>document-structure-aware</strong> chunking (split on markdown/HTML headings, code by function) and <strong>late chunking</strong> (embed the whole document first with a long-context embedder, then pool per-chunk — so each chunk's vector already carries document context). These beat naive splitting on structured content.</p></div>
+  </div>
+
+  <div class="concept" id="parent">
+    <h3>Parent-child (small-to-big) chunking</h3>
+    <p class="q">Q · What is parent-child chunking, and how does it improve retrieval?</p>
+    <p>Parent-child resolves the size tension directly: <strong>embed and search on small "child" chunks for precise matching, but feed the larger "parent" chunk to the LLM for full context.</strong> You get retrieval precision <em>and</em> generation context at once.</p>
+    <figure>
+      <div class="figtop"><span class="fignum">FIG. 03</span><span class="figttl">parent_child.svg</span></div>
+      <div class="figbody">
+        <svg viewBox="0 0 620 170" role="img" aria-label="Parent child chunking">
+          <defs><marker id="ar2" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#3B3AE8"/></marker></defs>
+          <rect class="s-box" x="20" y="30" width="90" height="34" rx="7"/><text class="s-ts" x="65" y="51" text-anchor="middle">query</text>
+          <!-- children -->
+          <rect class="s-accent" x="160" y="20" width="120" height="20" rx="4"/><text class="s-ts" x="220" y="34" text-anchor="middle">child (small)</text>
+          <rect class="s-teal" x="160" y="44" width="120" height="20" rx="4"/><text class="s-ts" x="220" y="58" text-anchor="middle" fill="var(--teal)">child ✓ match</text>
+          <rect class="s-accent" x="160" y="68" width="120" height="20" rx="4"/><text class="s-ts" x="220" y="82" text-anchor="middle">child (small)</text>
+          <line class="s-flow" x1="110" y1="47" x2="158" y2="54" marker-end="url(#ar2)"/>
+          <text class="s-ts" x="220" y="104" text-anchor="middle" fill="var(--ink-faint)">search precise children</text>
+          <!-- parent -->
+          <rect class="s-amber" x="360" y="30" width="150" height="66" rx="7"/><text class="s-ts" x="435" y="55" text-anchor="middle">parent chunk</text><text class="s-ts" x="435" y="71" text-anchor="middle" fill="var(--ink-faint)">(full section)</text>
+          <line class="s-flow" x1="280" y1="54" x2="358" y2="60" marker-end="url(#ar2)"/>
+          <text class="s-ts" x="435" y="112" text-anchor="middle" fill="var(--amber)">expand to parent for context</text>
+          <rect class="s-box" x="540" y="46" width="70" height="34" rx="7"/><text class="s-ts" x="575" y="67" text-anchor="middle">→ LLM</text>
+          <line class="s-flow" x1="510" y1="63" x2="538" y2="63" marker-end="url(#ar2)"/>
+        </svg>
+      </div>
+      <figcaption>Match on the sentence, answer with the section. A close cousin is <strong>RAPTOR</strong> — build a tree of recursive summaries so you can retrieve at multiple abstraction levels (leaf detail up to document gist).</figcaption>
+    </figure>
+    <div class="call rec"><span class="lbl">Why this impresses</span><p>Naming parent-child (a.k.a. "small-to-big" / auto-merging retrieval) shows you understand the precision-vs-context trade-off <em>and</em> a clean fix for it — a strong signal you've moved past tutorial RAG.</p></div>
+  </div>
+
+  <div class="concept" id="contextual">
+    <h3>Contextual retrieval</h3>
+    <p class="q">Q · (2026 must-know, not in the base list) How do you stop chunks from losing document context?</p>
+    <p>A chunk like <em>"The margin rose to 23%."</em> is useless in isolation — <em>whose</em> margin, <em>which quarter?</em> <strong>Contextual retrieval</strong> (popularized by Anthropic) fixes this: before embedding each chunk, prepend a short LLM-generated blurb situating it in its document (<em>"This chunk is from Acme's Q3 2025 10-K, discussing gross margin: The margin rose to 23%."</em>). Both the embedding and a BM25 index are built on the contextualized chunk.</p>
+    <div class="call latest"><span class="lbl">Latest — worth volunteering</span><p>Anthropic reported contextual retrieval cut failed retrievals by ~35%, and ~49% when combined with a reranker. It pairs perfectly with prompt caching (cache the doc, cheaply generate context for each chunk). Mentioning this unprompted signals you read primary sources, not just tutorials — exactly the RAG depth that separates you in an interview.</p></div>
+  </div>
+
+  <div class="concept" id="structured">
+    <h3>Structured data, tables &amp; PDF parsing</h3>
+    <p class="q">Q · How do you handle tables/SQL in RAG? How do you fix PDF parsing with tables and layouts?</p>
+    <p><strong>Tables &amp; layout-heavy PDFs</strong> are where naive RAG breaks: a plain text extractor flattens a table into meaningless streams of numbers, destroying the row/column relationships. Fixes, in order of sophistication:</p>
+    <ul class="tight">
+      <li><strong>Layout-aware parsing:</strong> use tools that understand document layout (e.g. layout models / vision-based parsers) to extract tables as structured Markdown/HTML, preserving rows and columns.</li>
+      <li><strong>Table summarization:</strong> generate a natural-language summary of each table, embed the <em>summary</em> for retrieval, but keep the original table to hand to the LLM (a parent-child pattern for tables).</li>
+      <li><strong>Multimodal:</strong> for truly complex layouts, embed page <em>images</em> with a vision model and let a VLM read them (multimodal RAG — Module 11).</li>
+    </ul>
+    <p><strong>SQL / structured databases:</strong> don't embed rows — use <strong>Text-to-SQL</strong>. The LLM translates the question into a SQL query, runs it against the real database, and answers from the exact result. This is the correct pattern for precise, numeric, or aggregate questions ("total revenue by region in Q3") where semantic search over text would be hopeless. Many production systems are hybrid: route factual/aggregate questions to Text-to-SQL, semantic questions to vector RAG.</p>
+    <div class="call rec"><span class="lbl">Say this in the interview</span><p>"I match the retrieval method to the data type: unstructured text → vector RAG; tables → layout-aware parsing + table summaries; structured DBs → Text-to-SQL. Forcing everything through one vector index is a classic reason RAG systems fail on numbers and tables."</p></div>
+  </div>
+
+  <!-- ============ SECTION C ============ -->
+  <div class="sec-head"><span class="sec-num">C</span><h2>Embeddings for Retrieval</h2></div>
+  <p class="sec-intro">The model that turns text into the vectors you search over. (Deep embedding theory is Module 6 — here's the RAG-practical view.)</p>
+
+  <div class="concept" id="emb">
+    <h3>Embedding models: text → vectors</h3>
+    <p class="q">Q · What are embedding models, and how do they convert text to vectors?</p>
+    <p>An <strong>embedding model</strong> maps a chunk of text to a dense vector (e.g. 768–3072 dims) positioned so that <em>semantically similar text lands nearby</em> in vector space. At query time you embed the question and find the nearest chunk vectors by cosine similarity — that's semantic search, and it's why a query and a relevant doc match even with zero shared keywords.</p>
+    <p>For RAG, these are typically <strong>bi-encoders</strong>: query and documents are embedded <em>independently</em>, so you can pre-compute all document vectors offline and just do fast nearest-neighbor lookup at query time. That independence is what makes them scalable — and also what makes them "lossy," which is the whole reason rerankers exist (§D).</p>
+    <div class="call ex"><span class="lbl">Concrete example</span><p>Query <em>"how do I reset my password"</em> embeds close to a doc chunk titled <em>"account recovery steps"</em> despite no word overlap. That semantic bridge is RAG's core mechanism — and the reason keyword search alone (BM25) misses relevant docs, which is why we combine them (hybrid).</p></div>
+  </div>
+
+  <div class="concept" id="emb-choose">
+    <h3>Choosing an embedding model for your RAG system</h3>
+    <p class="q">Q · How do you choose an embedding model for your RAG system?</p>
+    <p>Don't pick by leaderboard rank alone — choose on the axes that matter for <em>your</em> deployment:</p>
+    <table>
+      <tr><th>Axis</th><th>What to weigh</th></tr>
+      <tr><td>Quality</td><td>Start from the MTEB benchmark for retrieval, but validate on <em>your own</em> data — leaderboards don't reflect your domain.</td></tr>
+      <tr><td>Domain fit</td><td>Legal/medical/code jargon? A domain-tuned or code-specific embedder often beats a bigger general one.</td></tr>
+      <tr><td>Dimensionality</td><td>Higher dims = better quality but more storage + slower search. Some models (Matryoshka) let you truncate dims to trade quality for cost.</td></tr>
+      <tr><td>Cost / hosting</td><td>API (OpenAI text-embedding-3, Cohere, Voyage) = zero ops; open (BGE, E5, Nomic, Jina) = self-host, data stays in-house.</td></tr>
+      <tr><td>Context length</td><td>Max tokens per chunk the model handles — matters for large-chunk / late-chunking strategies.</td></tr>
+      <tr><td>Multilingual</td><td>Need Hindi/Gujarati/etc.? Pick a multilingual embedder (BGE-M3, multilingual-E5) — English-only models tank on other scripts.</td></tr>
+    </table>
+    <div class="call rec"><span class="lbl">Say this in the interview</span><p>"I shortlist from MTEB, then run a bake-off on a labeled slice of <em>my</em> corpus measuring recall@k — the leaderboard winner often loses on domain data. I weigh dimensionality against storage/latency, and if data can't leave our infra I go open-weight and self-host. And crucially, both indexing and querying must use the <em>same</em> embedding model — a mismatch silently destroys search quality."</p></div>
+    <div class="call pit"><span class="lbl">Trap: embedding drift</span><p>If you switch embedding models later, you must <strong>re-embed the entire corpus</strong> — old and new vectors live in incompatible spaces, so mixing them crashes search quality overnight. Plan migrations as a full re-index with a shadow/blue-green cutover, and version your embeddings. (This is a common troubleshooting question — see §J and Module 6.)</p></div>
+  </div>
+
+  <!-- ============ SECTION D ============ -->
+  <div class="sec-head"><span class="sec-num">D</span><h2>Retrieval — getting the <em>right</em> chunks</h2></div>
+  <p class="sec-intro">The heart of a modern RAG system. The 2026 production standard is a two-stage funnel: cast a wide net cheaply, then precisely rank. Master this section and you've covered the highest-ROI part of RAG.</p>
+
+  <div class="concept" id="hybrid">
+    <h3>Hybrid search &amp; Reciprocal Rank Fusion</h3>
+    <p class="q">Q · What is hybrid search, and why is it better than pure vector search?</p>
+    <p>Pure vector (dense) search is great at <em>meaning</em> but weak at <em>exact matches</em> — product codes, error IDs, names, rare acronyms. Keyword search (<strong>BM25</strong>, sparse) is the opposite: precise on exact terms, blind to synonyms. <strong>Hybrid search runs both and fuses the results</strong>, capturing semantic similarity <em>and</em> exact-term precision.</p>
+    <figure>
+      <div class="figtop"><span class="fignum">FIG. 04</span><span class="figttl">hybrid_search_rrf.svg</span></div>
+      <div class="figbody">
+        <svg viewBox="0 0 620 190" role="img" aria-label="Hybrid search with RRF">
+          <defs><marker id="ar3" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#3B3AE8"/></marker></defs>
+          <rect class="s-box" x="20" y="78" width="80" height="34" rx="7"/><text class="s-ts" x="60" y="99" text-anchor="middle">query</text>
+          <rect class="s-accent" x="150" y="40" width="150" height="34" rx="7"/><text class="s-ts" x="225" y="61" text-anchor="middle">dense (vector) → meaning</text>
+          <rect class="s-teal" x="150" y="116" width="150" height="34" rx="7"/><text class="s-ts" x="225" y="137" text-anchor="middle">sparse (BM25) → keywords</text>
+          <line class="s-flow" x1="100" y1="88" x2="148" y2="60" marker-end="url(#ar3)"/>
+          <line class="s-flow" x1="100" y1="100" x2="148" y2="130" marker-end="url(#ar3)"/>
+          <rect class="s-amber" x="350" y="78" width="130" height="34" rx="7"/><text class="s-ts" x="415" y="96" text-anchor="middle">RRF fusion</text><text class="s-ts" x="415" y="108" text-anchor="middle" fill="var(--ink-faint)">merge rankings</text>
+          <line class="s-flow" x1="300" y1="57" x2="348" y2="88" marker-end="url(#ar3)"/>
+          <line class="s-flow" x1="300" y1="133" x2="348" y2="102" marker-end="url(#ar3)"/>
+          <rect class="s-box" x="520" y="78" width="80" height="34" rx="7"/><text class="s-ts" x="560" y="99" text-anchor="middle">top-k</text>
+          <line class="s-flow" x1="480" y1="95" x2="518" y2="95" marker-end="url(#ar3)"/>
+        </svg>
+      </div>
+      <figcaption><strong>Reciprocal Rank Fusion (RRF)</strong> is the standard merge: it scores each doc by <code>Σ 1/(k + rank)</code> across both result lists, so items ranked highly by either method float up — no need to calibrate incompatible score scales.</figcaption>
+    </figure>
+    <div class="call rec"><span class="lbl">Say this in the interview</span><p>"Hybrid search is close to a free lunch — dense for semantics, sparse/BM25 for exact terms, fused with RRF. It's the fix when vector search misses on names, IDs, or jargon. I'd default to hybrid for any real corpus." (This is also the answer to 'RAG fails on domain jargon' — hybrid + a domain embedder.)</p></div>
+  </div>
+
+  <div class="concept" id="rerank">
+    <h3>Re-ranking — the highest-ROI upgrade</h3>
+    <p class="q">Q · What is re-ranking, and how does it improve RAG retrieval quality?</p>
+    <p>First-stage retrieval (bi-encoder + BM25) is fast but <em>lossy</em> — it compares independently-computed vectors, so it's approximate. A <strong>reranker (cross-encoder)</strong> takes the query and each candidate chunk <em>together</em> and scores their true relevance with full attention between them. It's far more accurate but too slow to run over the whole corpus — so you use it as a second stage on a small candidate set.</p>
+    <figure>
+      <div class="figtop"><span class="fignum">FIG. 05</span><span class="figttl">two_stage_retrieval.svg — the production standard</span></div>
+      <div class="figbody">
+        <svg viewBox="0 0 640 170" role="img" aria-label="Two stage retrieval funnel">
+          <defs><marker id="ar4" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#3B3AE8"/></marker></defs>
+          <rect class="s-box" x="20" y="65" width="80" height="40" rx="7"/><text class="s-ts" x="60" y="89" text-anchor="middle">query</text>
+          <rect class="s-accent" x="140" y="45" width="150" height="80" rx="8"/><text class="s-t" x="215" y="72" text-anchor="middle" font-weight="600">Stage 1: Recall</text><text class="s-ts" x="215" y="92" text-anchor="middle">hybrid, cheap &amp; fast</text><text class="s-ts" x="215" y="108" text-anchor="middle" fill="var(--accent)">→ top ~100 candidates</text>
+          <rect class="s-amber" x="330" y="45" width="150" height="80" rx="8"/><text class="s-t" x="405" y="72" text-anchor="middle" font-weight="600">Stage 2: Rerank</text><text class="s-ts" x="405" y="92" text-anchor="middle">cross-encoder, precise</text><text class="s-ts" x="405" y="108" text-anchor="middle" fill="var(--amber)">→ top 5–10 best</text>
+          <rect class="s-teal" x="520" y="65" width="100" height="40" rx="7"/><text class="s-ts" x="570" y="83" text-anchor="middle">→ LLM</text><text class="s-ts" x="570" y="97" text-anchor="middle" fill="var(--ink-faint)">clean context</text>
+          <line class="s-flow" x1="100" y1="85" x2="138" y2="85" marker-end="url(#ar4)"/>
+          <line class="s-flow" x1="290" y1="85" x2="328" y2="85" marker-end="url(#ar4)"/>
+          <line class="s-flow" x1="480" y1="85" x2="518" y2="85" marker-end="url(#ar4)"/>
+        </svg>
+      </div>
+      <figcaption>Cast a wide, cheap net (recall) → precisely rank the shortlist (precision). Rerankers like <strong>Cohere Rerank</strong> or <strong>BGE-Reranker</strong> are described as one of the single highest-ROI upgrades in RAG.</figcaption>
+    </figure>
+    <div class="call rec"><span class="lbl">Say this in the interview</span><p>"Two-stage retrieval is the modern default: hybrid gets me ~100 candidates fast, a cross-encoder reranker cuts that to the 5–10 that actually answer the question. It directly fixes the 'high similarity score but irrelevant result' failure, and it lets the LLM see clean context instead of noise — which also cuts hallucination and cost."</p></div>
+  </div>
+
+  <div class="concept" id="metadata">
+    <h3>Metadata filtering</h3>
+    <p class="q">Q · What is the role of metadata filtering in RAG?</p>
+    <p>Alongside each chunk's vector you store <strong>metadata</strong>: source, author, date, department, doc type, language — and, critically for you, <strong>access permissions / tenant ID</strong>. At query time you filter on metadata so vector search only runs over the allowed, relevant subset (<em>"only 2025 finance docs,"</em> <em>"only docs this user can see"</em>). It sharpens relevance, cuts latency (smaller search space), and is the mechanism behind freshness and access control.</p>
+    <div class="call pit"><span class="lbl">RAGGuard hook — pre-filter vs post-filter</span><p>There's a subtle, interview-critical distinction: <strong>pre-filtering</strong> (apply the metadata filter <em>before</em> the ANN search) vs <strong>post-filtering</strong> (search first, then drop disallowed results). For access control you <em>must</em> pre-filter — post-filtering can return zero results after dropping forbidden docs, and leaks information about what exists. This is a core RAGGuard design point; make sure you can explain it (full treatment in §G).</p></div>
+  </div>
+
+  <div class="concept" id="query-t">
+    <h3>Query transformation — HyDE, decomposition, step-back</h3>
+    <p class="q">Q · What is query transformation in RAG (HyDE, query decomposition, step-back prompting)?</p>
+    <p>Users write short, messy, or ambiguous queries that don't embed well against full documents. <strong>Query transformation</strong> rewrites the query <em>before</em> retrieval to improve the match. Three techniques to name:</p>
+    <ul class="tight">
+      <li><strong>HyDE (Hypothetical Document Embeddings):</strong> ask the LLM to generate a <em>fake ideal answer</em> to the query, then embed <em>that</em> and search with it. A hypothetical answer sits closer in vector space to real answer-documents than the short question does — you're matching answer-to-answer instead of question-to-answer.</li>
+      <li><strong>Query decomposition:</strong> break a complex multi-part question into sub-questions, retrieve for each, then combine — essential for multi-hop (below).</li>
+      <li><strong>Step-back prompting:</strong> generate a more general "step-back" question first (<em>"What is the refund policy?"</em> from <em>"Can I return shoes bought 40 days ago on sale?"</em>), retrieve the broad principle, then answer the specific case.</li>
+    </ul>
+    <figure>
+      <div class="figtop"><span class="fignum">FIG. 06</span><span class="figttl">hyde.svg</span></div>
+      <div class="figbody">
+        <svg viewBox="0 0 600 130" role="img" aria-label="HyDE flow">
+          <defs><marker id="ar5" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#3B3AE8"/></marker></defs>
+          <rect class="s-box" x="20" y="48" width="100" height="34" rx="7"/><text class="s-ts" x="70" y="69" text-anchor="middle">short query</text>
+          <rect class="s-accent" x="160" y="40" width="130" height="50" rx="7"/><text class="s-ts" x="225" y="60" text-anchor="middle">LLM writes a</text><text class="s-ts" x="225" y="75" text-anchor="middle" fill="var(--accent)">hypothetical answer</text>
+          <rect class="s-teal" x="330" y="48" width="110" height="34" rx="7"/><text class="s-ts" x="385" y="69" text-anchor="middle">embed &amp; search</text>
+          <rect class="s-box" x="480" y="48" width="100" height="34" rx="7"/><text class="s-ts" x="530" y="69" text-anchor="middle">real docs ✓</text>
+          <line class="s-flow" x1="120" y1="65" x2="158" y2="65" marker-end="url(#ar5)"/>
+          <line class="s-flow" x1="290" y1="65" x2="328" y2="65" marker-end="url(#ar5)"/>
+          <line class="s-flow" x1="440" y1="65" x2="478" y2="65" marker-end="url(#ar5)"/>
+          <text class="s-ts" x="300" y="115" text-anchor="middle" fill="var(--ink-faint)">match answer-to-answer, not question-to-answer</text>
+        </svg>
+      </div>
+      <figcaption>HyDE trades a cheap extra LLM call for materially better recall on vague queries — a common answer to "semantic search fails for short queries."</figcaption>
+    </figure>
+  </div>
+
+  <div class="concept" id="multihop">
+    <h3>Multi-hop questions &amp; "lost in the middle"</h3>
+    <p class="q">Q · How do you handle multi-document/multi-hop questions? What is the "lost in the middle" problem in RAG?</p>
+    <p><strong>Multi-hop</strong> questions require chaining facts across documents (<em>"Who is the CEO of the company that acquired the startup Jane founded?"</em>). Single-shot retrieval fails because no one chunk holds the whole chain. Fixes: <strong>query decomposition</strong> (break into hops, retrieve each), <strong>iterative/agentic retrieval</strong> (retrieve, reason, retrieve again based on what you learned — §E), or <strong>GraphRAG</strong> when relationships are the point (§E).</p>
+    <p><strong>Lost in the middle</strong> (from Module 1): LLMs use info at the <em>start</em> and <em>end</em> of context far better than the middle. In RAG this dictates ordering — after reranking, place the strongest chunks at the head and tail, not buried in the center. And it's a hard argument against "just retrieve 50 chunks and let the model sort it out": more context isn't better, cleaner context is.</p>
+    <div class="call rec"><span class="lbl">Say this in the interview</span><p>"I fight lost-in-the-middle two ways: retrieve <em>fewer, better</em> chunks via reranking, and order them strategically — best evidence first and last. For multi-hop I decompose the query or use an agentic retrieve-reason-retrieve loop rather than hoping one retrieval pass captures the whole chain."</p></div>
+  </div>
+
+  <!-- ============ SECTION E ============ -->
+  <div class="sec-head"><span class="sec-num">E</span><h2>Advanced RAG</h2></div>
+  <p class="sec-intro">The frontier patterns that define 2026 RAG. Knowing when each applies — not just what it is — is what gets you hired for senior/applied roles.</p>
+
+  <div class="concept" id="agentic">
+    <h3>Agentic RAG</h3>
+    <p class="q">Q · Explain Agentic RAG.</p>
+    <p>Classic RAG is a fixed, one-shot pipeline: retrieve once, generate once. <strong>Agentic RAG</strong> puts an LLM agent in charge of retrieval as a <em>tool</em> it can call repeatedly, with reasoning between calls. The agent decides <em>whether</em> to retrieve, <em>what</em> to search for, can reformulate queries, retrieve from <em>multiple sources</em>, evaluate whether results are sufficient, and loop until it can answer.</p>
+    <figure>
+      <div class="figtop"><span class="fignum">FIG. 07</span><span class="figttl">agentic_rag.svg</span></div>
+      <div class="figbody">
+        <svg viewBox="0 0 560 180" role="img" aria-label="Agentic RAG loop">
+          <defs><marker id="ar6" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#3B3AE8"/></marker></defs>
+          <rect class="s-accent" x="200" y="20" width="160" height="40" rx="8"/><text class="s-t" x="280" y="44" text-anchor="middle" font-weight="600">Agent (reasons)</text>
+          <rect class="s-teal" x="30" y="110" width="130" height="40" rx="8"/><text class="s-ts" x="95" y="134" text-anchor="middle">vector search</text>
+          <rect class="s-teal" x="215" y="110" width="130" height="40" rx="8"/><text class="s-ts" x="280" y="134" text-anchor="middle">web / SQL / API</text>
+          <rect class="s-amber" x="400" y="110" width="130" height="40" rx="8"/><text class="s-ts" x="465" y="130" text-anchor="middle">enough?</text><text class="s-ts" x="465" y="144" text-anchor="middle" fill="var(--amber)">answer / loop</text>
+          <line class="s-flow" x1="250" y1="60" x2="110" y2="108" marker-end="url(#ar6)"/>
+          <line class="s-flow" x1="280" y1="60" x2="280" y2="108" marker-end="url(#ar6)"/>
+          <line class="s-flow" x1="310" y1="60" x2="450" y2="108" marker-end="url(#ar6)"/>
+          <path class="s-flow" d="M465,110 C465,80 400,70 360,50" marker-end="url(#ar6)" stroke-dasharray="4 3"/>
+        </svg>
+      </div>
+      <figcaption>Retrieval becomes an agent action, not a fixed step. This is the dominant 2026 direction — it handles multi-hop, multi-source, and ambiguous queries that break single-shot RAG.</figcaption>
+    </figure>
+    <div class="call latest"><span class="lbl">Why it's the 2026 headline</span><p>Agentic RAG blends RAG with the agent patterns from Module 4 (ReAct, tool use). The trade-off to name: it's more capable but <em>slower and pricier</em> (multiple LLM + retrieval calls) and harder to evaluate — so you reserve it for genuinely complex queries and keep simple ones on a fast single-shot path (often via a router).</p></div>
+  </div>
+
+  <div class="concept" id="selfrag">
+    <h3>Self-RAG &amp; Corrective RAG (CRAG)</h3>
+    <p class="q">Q · Explain Self-RAG. How does the model decide when to retrieve?</p>
+    <p><strong>Self-RAG</strong> trains the model to <em>self-regulate</em> retrieval using special <strong>reflection tokens</strong>. Instead of always retrieving, the model first decides <em>whether</em> retrieval is even needed (skip it for <em>"what's 2+2"</em>, trigger it for <em>"our Q3 refund policy"</em>). After retrieving, it critiques each passage for relevance, and critiques its own generation for whether it's actually <em>supported</em> by the evidence — regenerating if not.</p>
+    <figure>
+      <div class="figtop"><span class="fignum">FIG. 08</span><span class="figttl">self_rag.svg</span></div>
+      <div class="figbody">
+        <svg viewBox="0 0 600 170" role="img" aria-label="Self-RAG decision flow">
+          <defs><marker id="ar7" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#3B3AE8"/></marker></defs>
+          <rect class="s-box" x="20" y="65" width="80" height="40" rx="7"/><text class="s-ts" x="60" y="89" text-anchor="middle">query</text>
+          <rect class="s-accent" x="140" y="60" width="120" height="50" rx="8"/><text class="s-ts" x="200" y="80" text-anchor="middle">retrieve</text><text class="s-ts" x="200" y="96" text-anchor="middle" fill="var(--accent)">needed?</text>
+          <rect class="s-teal" x="300" y="20" width="130" height="34" rx="7"/><text class="s-ts" x="365" y="41" text-anchor="middle">yes → grade docs</text>
+          <rect class="s-amber" x="300" y="115" width="130" height="34" rx="7"/><text class="s-ts" x="365" y="136" text-anchor="middle">no → answer direct</text>
+          <rect class="s-box" x="470" y="60" width="110" height="50" rx="8"/><text class="s-ts" x="525" y="80" text-anchor="middle">generate +</text><text class="s-ts" x="525" y="96" text-anchor="middle" fill="var(--rose)">self-critique</text>
+          <line class="s-flow" x1="100" y1="85" x2="138" y2="85" marker-end="url(#ar7)"/>
+          <line class="s-flow" x1="260" y1="75" x2="298" y2="45" marker-end="url(#ar7)"/>
+          <line class="s-flow" x1="260" y1="95" x2="298" y2="128" marker-end="url(#ar7)"/>
+          <line class="s-flow" x1="430" y1="40" x2="500" y2="58" marker-end="url(#ar7)"/>
+          <line class="s-flow" x1="430" y1="132" x2="500" y2="105" marker-end="url(#ar7)"/>
+        </svg>
+      </div>
+      <figcaption>Self-RAG makes retrieval conditional and adds a "is my answer supported?" check — directly attacking hallucination and wasted retrieval.</figcaption>
+    </figure>
+    <p><strong>Corrective RAG (CRAG)</strong> is a close relative worth naming: it grades retrieved docs and, if they're poor/irrelevant, <em>falls back to web search</em> or corrective action instead of generating from bad context. <strong>FLARE</strong> triggers retrieval mid-generation whenever the model's confidence drops. All three share one idea: <em>retrieval should be adaptive and self-checking, not blind.</em></p>
+  </div>
+
+  <div class="concept" id="graphrag">
+    <h3>GraphRAG</h3>
+    <p class="q">Q · What is GraphRAG, and when would you use it over traditional RAG?</p>
+    <p><strong>GraphRAG</strong> (Microsoft) builds a <strong>knowledge graph</strong> from your corpus — extracting entities and their relationships — instead of (or alongside) a flat vector index. Retrieval then traverses the graph, so the system can answer questions about <em>connections</em> and <em>global structure</em> that vector search fundamentally can't.</p>
+    <figure>
+      <div class="figtop"><span class="fignum">FIG. 09</span><span class="figttl">graphrag_vs_vector.svg</span></div>
+      <div class="figbody">
+        <svg viewBox="0 0 620 180" role="img" aria-label="GraphRAG vs vector RAG">
+          <!-- vector: isolated chunks -->
+          <text class="s-t" x="150" y="20" text-anchor="middle" font-weight="600">Vector RAG</text>
+          <text class="s-ts" x="150" y="36" text-anchor="middle">isolated chunks</text>
+          <rect class="s-accent" x="40" y="55" width="60" height="26" rx="4"/><rect class="s-accent" x="120" y="55" width="60" height="26" rx="4"/><rect class="s-accent" x="200" y="55" width="60" height="26" rx="4"/>
+          <rect class="s-accent" x="80" y="100" width="60" height="26" rx="4"/><rect class="s-accent" x="170" y="100" width="60" height="26" rx="4"/>
+          <text class="s-ts" x="150" y="155" text-anchor="middle" fill="var(--rose)">can't see relationships</text>
+          <!-- graph -->
+          <text class="s-t" x="460" y="20" text-anchor="middle" font-weight="600">GraphRAG</text>
+          <text class="s-ts" x="460" y="36" text-anchor="middle">entities + relationships</text>
+          <circle cx="400" cy="70" r="20" class="s-teal"/><text class="s-ts" x="400" y="74" text-anchor="middle">Jane</text>
+          <circle cx="500" cy="60" r="20" class="s-teal"/><text class="s-ts" x="500" y="64" text-anchor="middle">Acme</text>
+          <circle cx="470" cy="130" r="20" class="s-teal"/><text class="s-ts" x="470" y="134" text-anchor="middle">Bob</text>
+          <circle cx="560" cy="120" r="20" class="s-teal"/><text class="s-ts" x="560" y="124" text-anchor="middle">Co</text>
+          <line class="s-line" x1="420" y1="68" x2="480" y2="62"/><text class="s-ts" x="450" y="54" text-anchor="middle" fill="var(--ink-faint)">founded</text>
+          <line class="s-line" x1="495" y1="78" x2="475" y2="112"/><line class="s-line" x1="518" y1="70" x2="548" y2="105"/>
+          <line class="s-line" x1="490" y1="128" x2="542" y2="122"/>
+        </svg>
+      </div>
+      <figcaption>Vector RAG retrieves similar chunks; GraphRAG traverses <em>who-relates-to-what</em>. Use it for multi-hop reasoning and "global" questions ("what are the main themes across all docs?").</figcaption>
+    </figure>
+    <div class="call rec"><span class="lbl">When to reach for it</span><p>"GraphRAG shines on <em>relational</em> and <em>global</em> questions — multi-hop chains, 'how do X and Y connect,' summarizing themes across a whole corpus — where vector search only sees local similarity. The cost is a heavier, pricier indexing step to build and maintain the graph, so I use it when relationships are central, not as a default. In practice, hybrid graph+vector is common."</p></div>
+  </div>
+
+  <!-- ============ SECTION F ============ -->
+  <div class="sec-head"><span class="sec-num">F</span><h2>Evaluation</h2></div>
+  <p class="sec-intro">You cannot improve a RAG system you can't measure, and "debug a bad RAG system" is a near-guaranteed interview question. This is where evaluation-driven candidates stand out.</p>
+
+  <div class="concept" id="eval">
+    <h3>Evaluating RAG — the triad &amp; the metrics</h3>
+    <p class="q">Q · How do you evaluate a RAG system? Explain faithfulness, relevance, and context precision/recall.</p>
+    <p>The key insight: RAG has <strong>two subsystems that fail independently</strong> — retrieval and generation — so you evaluate them separately, then end-to-end. The <strong>RAG triad</strong> frames it:</p>
+    <figure>
+      <div class="figtop"><span class="fignum">FIG. 10</span><span class="figttl">rag_triad.svg</span></div>
+      <div class="figbody">
+        <svg viewBox="0 0 520 240" role="img" aria-label="RAG evaluation triad">
+          <rect class="s-box" x="200" y="20" width="120" height="40" rx="8"/><text class="s-ts" x="260" y="44" text-anchor="middle">Query</text>
+          <rect class="s-teal" x="30" y="150" width="150" height="44" rx="8"/><text class="s-ts" x="105" y="174" text-anchor="middle">Retrieved context</text>
+          <rect class="s-amber" x="340" y="150" width="150" height="44" rx="8"/><text class="s-ts" x="415" y="174" text-anchor="middle">Answer</text>
+          <!-- edges with labels -->
+          <line class="s-line" x1="215" y1="55" x2="120" y2="148"/><text class="s-tm" x="120" y="105" text-anchor="middle" fill="var(--teal)">Context</text><text class="s-ts" x="120" y="120" text-anchor="middle" fill="var(--teal)">Relevance</text>
+          <line class="s-line" x1="305" y1="55" x2="410" y2="148"/><text class="s-tm" x="405" y="105" text-anchor="middle" fill="var(--accent)">Answer</text><text class="s-ts" x="405" y="120" text-anchor="middle" fill="var(--accent)">Relevance</text>
+          <line class="s-line" x1="180" y1="172" x2="338" y2="172"/><text class="s-tm" x="260" y="164" text-anchor="middle" fill="var(--rose)">Faithfulness</text><text class="s-ts" x="260" y="210" text-anchor="middle" fill="var(--ink-faint)">is the answer grounded in the context?</text>
+        </svg>
+      </div>
+      <figcaption>Three edges = three questions. Did we retrieve relevant context? Is the answer relevant to the query? Is the answer faithful to (supported by) the context? A failure on any edge is a different fix.</figcaption>
+    </figure>
+    <h4 class="mini">Retrieval metrics (is the right context found?)</h4>
+    <ul class="tight">
+      <li><strong>Context recall:</strong> of all the info needed to answer, how much did retrieval actually surface? Low recall → the answer <em>can't</em> be right; fix chunking/embeddings/hybrid.</li>
+      <li><strong>Context precision:</strong> of what was retrieved, how much is actually relevant (and is it ranked high)? Low precision → noisy context; fix with reranking.</li>
+    </ul>
+    <h4 class="mini">Generation metrics (is the answer good?)</h4>
+    <ul class="tight">
+      <li><strong>Faithfulness (groundedness):</strong> is every claim in the answer supported by the retrieved context, with no invention? This is your primary anti-hallucination metric.</li>
+      <li><strong>Answer relevance:</strong> does the answer actually address the user's question (not just recite context)?</li>
+    </ul>
+    <div class="call latest"><span class="lbl">How you measure these in 2026</span><p>Frameworks like <strong>RAGAS</strong>, TruLens, DeepEval, and Arize Phoenix compute these using <strong>LLM-as-a-judge</strong> (Module 9) — e.g. faithfulness by having a judge model check each answer sentence against the context. Build a <strong>golden eval set</strong> of query→ideal-context→ideal-answer, run it in CI on every change, and monitor the same metrics in production. "I run evaluation-driven RAG development with RAGAS-style faithfulness/precision/recall on a golden set in CI" is exactly the maturity signal recruiters want.</p></div>
+    <div class="call rec"><span class="lbl">The debugging decision tree (say this)</span><p>"To debug a bad RAG system I first localize: <em>is it a retrieval or a generation failure?</em> If the right context wasn't retrieved → chunking, embeddings, hybrid, reranking. If the context was there but the answer is wrong → it's a generation/faithfulness problem → prompt, grounding instructions, or model. Splitting the pipeline before touching anything is the whole game."</p></div>
+  </div>
+
+  <!-- ============ SECTION G ============ -->
+  <div class="sec-head"><span class="sec-num">G</span><h2>Production &amp; Security</h2></div>
+  <p class="sec-intro">Everything between a demo and a real system: attribution, scale, freshness, and — the part that <em>is</em> your project — enforcing who can see what.</p>
+
+  <div class="concept flagship" id="access">
+    <h3>Per-user access control &amp; multi-tenancy <span class="flagtag">RAGGuard</span></h3>
+    <p class="q">Q · Your RAG system needs per-user access control on internal documents. How do you implement it? (+ multi-tenant indexing)</p>
+    <p>This is <em>your</em> question — RAGGuard is a multi-tenant, permission-aware RAG system, so treat this as your set-piece answer. The core problem: in enterprise RAG, two users asking the same question must get answers built from <em>different</em> documents based on their permissions. A naive RAG system that searches the whole index and returns the top-k will happily leak a document the user was never allowed to see — a serious data breach, not a quality bug.</p>
+    <p>The non-negotiable principle: <strong>enforce permissions at retrieval time by pre-filtering, never rely on the LLM to withhold.</strong> The model must never even <em>see</em> unauthorized content — telling it "don't reveal restricted docs" is not security, it's a suggestion an injection can bypass.</p>
+
+    <figure>
+      <div class="figtop"><span class="fignum">FIG. 11</span><span class="figttl">permission_aware_retrieval.svg — the RAGGuard pattern</span></div>
+      <div class="figbody">
+        <svg viewBox="0 0 720 260" role="img" aria-label="Permission-aware RAG retrieval">
+          <defs><marker id="ar8" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#3B3AE8"/></marker></defs>
+          <!-- user + identity -->
+          <rect class="s-box" x="20" y="100" width="110" height="56" rx="8"/><text class="s-ts" x="75" y="122" text-anchor="middle">user query</text><text class="s-ts" x="75" y="138" text-anchor="middle" fill="var(--rose)">+ identity/ACL</text>
+          <!-- resolve permissions -->
+          <rect class="s-rose" x="170" y="100" width="130" height="56" rx="8"/><text class="s-ts" x="235" y="120" text-anchor="middle">resolve permissions</text><text class="s-ts" x="235" y="136" text-anchor="middle" fill="var(--ink-faint)">tenant_id, groups,</text><text class="s-ts" x="235" y="149" text-anchor="middle" fill="var(--ink-faint)">doc ACLs</text>
+          <!-- pre-filter -->
+          <rect class="s-amber" x="340" y="100" width="130" height="56" rx="8"/><text class="s-ts" x="405" y="120" text-anchor="middle" font-weight="600">PRE-FILTER</text><text class="s-ts" x="405" y="136" text-anchor="middle">metadata filter</text><text class="s-ts" x="405" y="149" text-anchor="middle" fill="var(--amber)">before ANN search</text>
+          <!-- vector db -->
+          <rect class="s-teal" x="510" y="90" width="180" height="76" rx="8"/><text class="s-ts" x="600" y="112" text-anchor="middle">vector DB (allowed subset)</text><text class="s-ts" x="600" y="130" text-anchor="middle" fill="var(--ink-faint)">each chunk tagged:</text><text class="s-ts" x="600" y="144" text-anchor="middle" fill="var(--ink-faint)">tenant_id · acl · dept</text>
+          <line class="s-flow" x1="130" y1="128" x2="168" y2="128" marker-end="url(#ar8)"/>
+          <line class="s-flow" x1="300" y1="128" x2="338" y2="128" marker-end="url(#ar8)"/>
+          <line class="s-flow" x1="470" y1="128" x2="508" y2="128" marker-end="url(#ar8)"/>
+          <!-- result -->
+          <rect class="s-box" x="300" y="200" width="200" height="42" rx="8"/><text class="s-ts" x="400" y="220" text-anchor="middle">retrieve → rerank → LLM</text><text class="s-ts" x="400" y="234" text-anchor="middle" fill="var(--teal)">only authorized chunks ever reach the model</text>
+          <line class="s-flow" x1="600" y1="166" x2="470" y2="205" marker-end="url(#ar8)"/>
+        </svg>
+      </div>
+      <figcaption>Identity → resolve ACLs → <strong>pre-filter the vector search</strong> to the allowed subset → then retrieve/rerank/generate. The unauthorized documents are excluded <em>before</em> the model ever sees them.</figcaption>
+    </figure>
+
+    <h4 class="mini">Implementation choices (name the trade-offs)</h4>
+    <ul class="tight">
+      <li><strong>Metadata-based pre-filtering (most common):</strong> tag every chunk with <code>tenant_id</code>, <code>allowed_roles/groups</code>, <code>acl</code>. At query time, resolve the user's permissions and pass them as a <em>pre-filter</em> so ANN search only runs over allowed vectors. Must be <em>pre</em>-filter, not post — post-filtering leaks existence and can empty your result set.</li>
+      <li><strong>Namespace / index-per-tenant:</strong> physically isolate each tenant's data in its own namespace/collection. Strongest isolation (no cross-tenant leakage risk), simpler compliance — but more overhead and weaker for cross-tenant shared docs. Good for strict enterprise multi-tenancy.</li>
+      <li><strong>Hybrid:</strong> namespace per tenant <em>plus</em> row-level ACL filtering <em>within</em> a tenant for per-user/per-group document permissions. This is the realistic RAGGuard architecture.</li>
+      <li><strong>Keep ACLs fresh:</strong> permissions change (someone leaves a team). Sync document ACLs from the source system (SharePoint/Drive/Okta groups) into chunk metadata on a schedule or via events, so revoked access takes effect in retrieval quickly.</li>
+    </ul>
+    <div class="call rec"><span class="lbl">Your RAGGuard interview set-piece</span><p>"In RAGGuard I enforce permissions at retrieval, never at generation. Every chunk carries tenant and ACL metadata; I resolve the caller's identity to their groups and <em>pre-filter</em> the vector search so only authorized chunks are candidates — the LLM physically cannot see what the user can't. I use namespace isolation per tenant plus row-level ACL filtering within a tenant, sync ACLs from the source of truth so revocations propagate, and I test it with an authz eval set: for a given user, assert forbidden docs never appear in retrieved context. Pre-filter vs post-filter matters — post-filtering leaks document existence and can silently return empty."</p></div>
+    <div class="call latest"><span class="lbl">Depth bonus</span><p>Raise the subtle risks that show real security thinking: (1) <strong>indirect prompt injection</strong> via a retrieved doc (Module 2) — an authorized-but-poisoned document can still hijack the agent, so combine access control with input guardrails; (2) <strong>data leakage through citations/logs</strong> — make sure your traces and cited snippets respect the same ACLs; (3) <strong>the embedding itself</strong> can memorize content, so isolation should extend to how you host embeddings. This turns "I filter by metadata" into a genuine security architecture.</p></div>
+  </div>
+
+  <div class="concept" id="citation">
+    <h3>Citations &amp; source attribution</h3>
+    <p class="q">Q · How do you implement citation and source attribution in RAG?</p>
+    <p>Citations are what make RAG <em>trustworthy</em> and auditable — and, for you, tie into access control (never cite a source the user can't open). Implementation: carry a stable <strong>ID + metadata with every chunk</strong> through retrieval into the prompt; instruct the model to cite the specific chunk IDs it used (e.g. structured output with a <code>sources</code> field, or inline markers); then map IDs back to real document links in the UI. For higher rigor, run a <strong>post-hoc grounding check</strong> — verify each cited claim is actually supported by the cited chunk (an LLM-as-judge faithfulness pass), and flag or drop unsupported claims.</p>
+    <div class="call rec"><span class="lbl">Say this in the interview</span><p>"I pass chunk IDs through the pipeline and have the model emit citations as structured output, then resolve them to source links. I also verify citations post-hoc for faithfulness so we don't show a citation that doesn't actually support the claim — a fake citation is worse than none."</p></div>
+  </div>
+
+  <div class="concept" id="scale">
+    <h3>Scaling to millions of docs &amp; optimizing latency</h3>
+    <p class="q">Q · How do you scale a RAG system to millions of documents? How do you optimize RAG for latency in production?</p>
+    <h4 class="mini">Scale</h4>
+    <p>At millions–billions of vectors, exact search is impossible — you rely on <strong>ANN (Approximate Nearest Neighbor)</strong> indexes like HNSW or IVF-PQ (Module 6) that trade a little recall for massive speed. Add <strong>sharding</strong> (partition the index across nodes), <strong>quantization</strong> (compress vectors to cut memory), and <strong>metadata pre-filtering</strong> to shrink the search space. Use a managed/distributed vector DB (Pinecone, Milvus, Weaviate, Qdrant, pgvector at smaller scale) built for this.</p>
+    <h4 class="mini">Latency</h4>
+    <p>RAG adds a retrieval hop before generation, so latency levers include: <strong>ANN tuning</strong> (recall vs speed), <strong>caching</strong> (semantic cache for repeated/similar queries — Module 8; and prompt-cache the stable system prompt), <strong>limit reranking</strong> to a small candidate set, <strong>parallelize</strong> hybrid retrieval branches, <strong>stream</strong> the generation so time-to-first-token feels fast, and <strong>right-size k</strong> (fewer, reranked chunks = less context = faster generation <em>and</em> better quality).</p>
+    <div class="call rec"><span class="lbl">Say this in the interview</span><p>"Scale is an ANN + sharding + quantization + pre-filtering problem; latency is a caching + streaming + 'retrieve fewer, better chunks' problem. Reranking down to 5 clean chunks helps both latency and quality — the biggest lever is usually <em>not</em> stuffing more context in."</p></div>
+  </div>
+
+  <div class="concept" id="freshness">
+    <h3>Freshness, updates &amp; versioning</h3>
+    <p class="q">Q · How do you handle document updates and maintain freshness? How do you version an evolving knowledge base?</p>
+    <p><strong>Freshness:</strong> run an <strong>incremental indexing pipeline</strong> — on document create/update/delete, re-chunk and re-embed only the changed docs and upsert them (don't rebuild the whole index). Use content hashes or timestamps to detect changes, and <strong>propagate deletes</strong> (a stale/deleted doc lingering in the index is a common bug — the source of "RAG returns outdated answers"). Store a <code>last_updated</code> timestamp in metadata so you can prefer recent info and even filter by recency.</p>
+    <p><strong>Versioning:</strong> tag chunks with a <code>version</code> / <code>valid_from</code> / <code>valid_to</code> so you can retrieve the version relevant to a query's time context, roll back a bad ingest, and reproduce what the system knew at a past moment (important for auditability and the "auditor asks why you answered X 6 months ago" scenario). Contradictory answers across doc versions are resolved by preferring the newest <code>valid</code> version and/or surfacing the conflict with sources.</p>
+    <div class="call pit"><span class="lbl">The #1 freshness bug</span><p>Deletes that don't propagate. When a document is removed at the source, its chunks must be deleted from the vector index too — otherwise RAG keeps citing content that no longer exists. Wire deletes into the ingestion pipeline explicitly; don't assume re-embedding covers it.</p></div>
+  </div>
+
+  <div class="concept" id="failures">
+    <h3>Common RAG failure modes &amp; how to debug them</h3>
+    <p class="q">Q · What are the common failure modes of RAG systems, and how do you debug them?</p>
+    <table>
+      <tr><th>Failure</th><th>Where it lives</th><th>Fix</th></tr>
+      <tr><td>Missing / wrong context retrieved</td><td>Retrieval</td><td>Better chunking, hybrid search, domain embedder, query transformation, reranking</td></tr>
+      <tr><td>Right context, wrong answer</td><td>Generation</td><td>Grounding prompt ("answer only from context"), lower temp, stronger model, faithfulness check</td></tr>
+      <tr><td>Hallucinates <em>with</em> good context</td><td>Generation</td><td>Explicit "if not in context, say you don't know", reduce distracting chunks, cite-then-answer</td></tr>
+      <tr><td>Noisy / irrelevant top-k</td><td>Retrieval</td><td>Reranker, metadata filter, contextual compression</td></tr>
+      <tr><td>Fails on jargon / names / IDs</td><td>Retrieval</td><td>Hybrid (BM25) + domain-tuned embeddings</td></tr>
+      <tr><td>Outdated answers</td><td>Indexing</td><td>Incremental re-index + propagate deletes + recency metadata</td></tr>
+      <tr><td>Multi-hop misses</td><td>Retrieval strategy</td><td>Query decomposition, agentic/iterative retrieval, GraphRAG</td></tr>
+    </table>
+    <div class="call rec"><span class="lbl">The meta-answer</span><p>"Every RAG debug starts with one question: <em>retrieval failure or generation failure?</em> Log the retrieved context for the failing query and look. If the answer wasn't in what was retrieved, it's a retrieval problem — no prompt fixes that. If it was there and the model still got it wrong, it's generation. That split determines everything I touch next." Evaluation-driven debugging is the single most valuable thing you can demonstrate here.</p></div>
+  </div>
+
+  <!-- ============ SECTION J ============ -->
+  <div class="sec-head"><span class="sec-num">J</span><h2>Production Troubleshooting Drills</h2></div>
+  <p class="sec-intro">The rapid-fire "your RAG does X — fix it" scenarios. Lead with retrieval-vs-generation triage, then the highest-leverage fix.</p>
+
+  <div class="concept" id="troubleshoot">
+    <h3>Rapid-fire fixes</h3>
+    <table>
+      <tr><th>Symptom</th><th>Fix (lead with this)</th></tr>
+      <tr><td>Hallucinating despite the right context</td><td>Generation problem: add strict grounding ("answer only from context; else say you don't know"), lower temperature, reduce distracting chunks (rerank to fewer), add a faithfulness check that flags unsupported claims.</td></tr>
+      <tr><td>Chunk overlap causes redundant results</td><td>Reduce overlap %, deduplicate near-identical chunks at index time, and apply MMR (maximal marginal relevance) to diversify retrieved results.</td></tr>
+      <tr><td>Retrieval too slow on a large KB</td><td>Tune ANN (HNSW params), add metadata pre-filtering to shrink search space, quantize vectors, cache (semantic + prompt), limit reranking to top ~100.</td></tr>
+      <tr><td>Returns duplicate results</td><td>Dedup at ingestion (content hash), apply MMR at retrieval to penalize redundancy, collapse chunks from the same parent doc.</td></tr>
+      <tr><td>Needs per-user access control</td><td>Pre-filter the vector search by tenant/ACL metadata resolved from the caller's identity — never let the LLM see unauthorized chunks. Namespace per tenant + row-level ACLs. (§G / RAGGuard.)</td></tr>
+      <tr><td>Fails on domain jargon</td><td>Hybrid search (BM25 catches exact terms) + a domain-tuned/fine-tuned embedding model; add domain terms to the sparse index.</td></tr>
+      <tr><td>Now needs images &amp; tables</td><td>Multimodal RAG: layout-aware parsing + table summaries (parent-child), multimodal embeddings for images, VLM to read complex pages. (Module 11.)</td></tr>
+      <tr><td>KB updates frequently / needs versioning</td><td>Incremental upsert on change (hash/timestamp), propagate deletes, version chunks with valid_from/valid_to, prefer newest valid version.</td></tr>
+      <tr><td>Multi-hop questions fail</td><td>Query decomposition into sub-questions, agentic retrieve-reason-retrieve loop, or GraphRAG when relationships are central.</td></tr>
+      <tr><td>Contradictory answers across sources</td><td>Attach source + recency metadata, prefer authoritative/newest source, surface the conflict with citations, or add a reconciliation step that reasons over conflicting chunks.</td></tr>
+      <tr><td>Outdated answers from evolving KB</td><td>Fix the ingestion pipeline: incremental re-index + delete propagation + recency-weighted retrieval.</td></tr>
+      <tr><td>PDF tables/layouts break parsing</td><td>Layout-aware / vision-based parsers → extract tables as Markdown/HTML, summarize tables for embedding, keep originals for the LLM.</td></tr>
+    </table>
+    <div class="call rec"><span class="lbl">Interview meta-move</span><p>Open every one of these with the triage — "first, is this retrieval or generation?" — then give the fix <em>and</em> the eval you'd add (e.g. "and I'd add a recall@k check / an authz test so it can't regress"). Pairing a fix with an eval is the single strongest RAG-engineer signal.</p></div>
+  </div>
+
+  <div class="foot">
+    <p><strong>Module 3 complete — your flagship is now airtight.</strong> You can take an interviewer from "what is RAG" all the way through chunking, hybrid + rerank retrieval, HyDE, GraphRAG, Self-RAG, agentic RAG, the full evaluation triad, and the permission-aware multi-tenant architecture that <em>is</em> RAGGuard. When they push on RAG because it's on your resume, you now go deeper than they expect — including the security nuances (pre-filter vs post-filter, injection-via-retrieval, citation ACLs) that almost no candidate raises.</p>
+    <p style="margin-top:14px"><strong>Rehearse hardest:</strong> the §G RAGGuard set-piece, the retrieval-vs-generation debugging triad (§F), and the "is RAG dead" nuance (§A) — those three are where you win the room.</p>
+    <p style="margin-top:14px"><strong>Next up:</strong> Module 4 — AI Agents &amp; Agentic Systems (ReAct, tool use, MCP, memory, multi-agent, guardrails). It builds directly on agentic RAG from this module. Say the word and I'll build it in the same format.</p>
+  </div>
+
+</main>
+</div>
+</body>
+</html>
